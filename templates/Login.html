@@ -7,9 +7,9 @@
         <div class="container">
             <div class="signin-content">
                 <div class="signin-image">
-                    <figure><img src="images/signin-image.jpg" alt="sing up image"></figure>
+                    <figure><img src="{{url_for('static',filename='images/signin-image.jpg')}}" alt="sing up image"></figure>
                     <br>
-                    <a href="#section2" class="signup-image-link">Create an account</a>
+                    <a href="/signup" class="signup-image-link">Create an account</a>
                 </div>
 
                 <div class="signin-form">
@@ -31,18 +31,7 @@
                             <input type="submit" name="signin" id="signin" class="form-submit" value="Log in" />
                         </div>
                     </form>
-                    <div class="social-login">
-                        <span class="social-label">Or login with</span>
 
-                        <!-- Comment kr lena iss section ko accordingly -->
-                        <ul class="socials">
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
-                        </ul>
-                        <!-- ========================================== -->
-
-                    </div>
                 </div>
             </div>
         </div>
