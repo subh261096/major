@@ -1,2 +1,0 @@
-# major
-Major Evoting
