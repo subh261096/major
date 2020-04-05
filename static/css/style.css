@@ -772,3 +772,7 @@ label.valid:after {
 .button {
     background-color: black;
 }
+.danger {
+    background-color: red;
+    color:white;
+}

@@ -77,7 +77,6 @@ def is_logged_in(f):
         else:
             flash('UnAuthorised!, Please Login First!', 'danger')
             return redirect(url_for('home'))
-            ##important indentation
     return wrap
 ######################################### END #######################################################
 def already_logged_in(f):
@@ -164,12 +163,23 @@ def login():
 
 
 @app.route('/')
+def home():
+    return render_template("home.html")
+
+
 @app.route('/voting')
+@is_logged_in
 def hello_world():
     return render_template("VotingList.html")
 
+@app.route('/results')
+@is_logged_in
+def results():
+    return render_template("result.html")
 
+@is_logged_in
 @app.route('/submit_vote',methods=['POST'])
+
 def submit_vote():
     voter_id=request.form.get("voter_id")
     party=request.form.get("party_name")

@@ -1,46 +1,43 @@
 {% extends 'base.html' %} {% block body %}
+<section class="sign-in">
+    <a name="section1"></a>
+    <div class="container">
+        <div class="signin-content">
+            <div class="signin-image">
+                <figure><img src="https://media.giphy.com/media/26hiuhKoQ4JrG7aPS/giphy.gif" alt="sign up image"></figure>
+            </div>
 
-<div class="main">
-    <section class="sign-in">
-        <a name="section1"></a>
-        <div class="container">
-            <div class="signin-content">
-                <div class="signin-image">
-                    <figure><img src="https://media.giphy.com/media/26hiuhKoQ4JrG7aPS/giphy.gif" alt="sign up image"></figure>
-                </div>
+            <div class="signin-form">
+                <h2 class="form-title">Let's Vote</h2>
+                <form method="POST" class="register-form" id="login-form" action="{{url_for('submit_vote')}}">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Voter ID</span>
+                        </div>
+                        <input type="text" class="form-control" name="voter_id" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    </div>
 
-                <div class="signin-form">
-                    <h2 class="form-title">Let's Vote</h2>
-                    <form method="POST" class="register-form" id="login-form" action="{{url_for('submit_vote')}}">
-                        <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="inputGroup-sizing-sm">Voter ID</span>
-                            </div>
-                            <input type="text" class="form-control" name="voter_id" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" for="inputGroupSelect01"> Party </span>
                         </div>
-
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" for="inputGroupSelect01"> Party </span>
-                            </div>
-                            <select class="custom-select" id="inputGroupSelect01" name="party_name">
-                            <option selected>Choose...</option>
-                            <option value="1">BJP</option>
-                            <option value="2">Congress</option>
-                            <option value="3">JDU</option>
-                            <option value="4">CPM</option>
-                            <option value="5">AAP</option>
-                            <option value="6">Shiv Sena</option>
-                        </select>
-                        </div>
-                        <div class="form-group form-button ">
-                            <input class="btn btn-outline-success" type="submit" value="Submit Vote" name="success" id="success">
-                        </div>
-                    </form>
-                    <div id="message"></div>
-                </div>
+                        <select class="custom-select" id="inputGroupSelect01" name="party_name">
+                        <option selected>Choose...</option>
+                        <option value="1">BJP</option>
+                        <option value="2">Congress</option>
+                        <option value="3">JDU</option>
+                        <option value="4">CPM</option>
+                        <option value="5">AAP</option>
+                        <option value="6">Shiv Sena</option>
+                    </select>
+                    </div>
+                    <div class="form-group form-button ">
+                        <input class="btn btn-outline-success" type="submit" value="Submit Vote" name="success" id="success">
+                    </div>
+                </form>
+                <div id="message"></div>
             </div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
 {% endblock %}
