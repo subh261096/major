@@ -1,5 +1,5 @@
 from wtforms import Form, TextField, PasswordField, validators
-from flask import Flask,render_template,request
+from flask import Flask, render_template, request, flash, url_for, redirect, session, jsonify
 from HashingFunction import hashfunction
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps, partial
@@ -20,8 +20,8 @@ db = SQLAlchemy(app)
 ######################################### DATABSE TABLES ################################################
 
 
-                  ########################## USER TABLE ######################
-class UserData(db.Model):
+                    ########################## USER TABLE ######################
+class Users(db.Model):
     __tablename__ = 'UserData'
     Id = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String(30))
@@ -31,14 +31,14 @@ class UserData(db.Model):
 
 
                     ######################### USER LIST ###################
-class UserList(db.Model):
-    __tablename__ = 'UserList'
-    UserId = db.Column(db.Integer, primary_key=True)
+class ElectionsList(db.Model):
+    __tablename__ = 'Elections'
+    ElectionName = db.Column(db.Integer, primary_key=True)
     ListName=db.Column(db.String(50),primary_key=True)
     LastModifiedDate = db.Column(DateTime, default=datetime.datetime.utcnow)
                     ############################### END ##########################
 
-class UserMovie(db.Model):
+class Election(db.Model):
     __tablename__ = 'UserMovie'
     List = db.Column(db.String(50),primary_key=True)
     MovieId=db.Column(db.String(30),primary_key=True)
@@ -59,13 +59,10 @@ class RegistrationForm(Form):
     '''Child of a WTForm Form object...'''
     username = TextField('Username', [validators.Length(min=3, max=20)])
     password = PasswordField('Password', [validators.DataRequired(),
-                                          validators.EqualTo('confirm',
-                                                             message="Passwords must match")])
+                                            validators.EqualTo('confirm',
+                                                            message="Passwords must match")])
     confirm = PasswordField('Confirm Password')
 ######################################### END #############################################
-
-
-
 
 
 
@@ -116,14 +113,14 @@ def signup():
                 save_to_database.rollback()
                 save_to_database.flush()
                 flash("can't Register Now!, please try again Later..")
-            return render_template('signup.html', form=form)
+            return render_template('Signup.html', form=form)
         else:
             flash("User Already Exists! Please Enter Unique username!")
-            return render_template('signup.html', form=form)
+            return render_template('Signup.html', form=form)
     if request.method == "POST" and form.validate() == False:  # if form info is invalid
         flash('Invalid password, please try again')
-        return render_template('signup.html', form=form)
-    return render_template("signup.html")
+        return render_template('Signup.html', form=form)
+    return render_template("Signup.html")
 ######################################### END #########################################################
 
 
@@ -142,7 +139,7 @@ def login():
 
         if (UserData.query.filter_by(Name=attempted_username).count()) == 0:
             flash("Username not found. Try a different username, or create an account.")
-            return render_template("login.html")
+            return render_template("Login.html")
         data_model = UserData.query.filter_by(Name=attempted_username).first()
         try:
             if attempted_username == data_model.Name and sha256_crypt.verify(attempted_password, data_model.Password):
@@ -156,10 +153,10 @@ def login():
                 return redirect(url_for("home"))
             else:
                 flash("Incorrect password, try again")
-                return render_template("login.html")
+                return render_template("Login.html")
         except Exception as e:
             return str(e)
-    return render_template("login.html")
+    return render_template("Login.html")
 
 ######################################### END #########################################################
 
@@ -171,13 +168,6 @@ def login():
 def hello_world():
     return render_template("VotingList.html")
 
-@app.route("/login")
-def login():
-    return render_template("Login.html")
-
-@app.route("/signup")
-def login():
-    return render_template("Signup.html")
 
 @app.route('/submit_vote',methods=['POST'])
 def submit_vote():

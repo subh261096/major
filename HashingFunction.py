@@ -1,5 +1,3 @@
-
-
 import hashlib
 
 def hashfunction(candidateID,mac0="qwertyuipasdfghjklzxcvbnm"):
