@@ -6,9 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>E-voting</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <link rel="icon" href="https://cdn.clipart.email/68d68dbab9f7617f293b6f28b934a641_elections-election-icons-envelope-election-votes-box-signs-_800-800.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <link rel="icon"
+        href="https://cdn.clipart.email/68d68dbab9f7617f293b6f28b934a641_elections-election-icons-envelope-election-votes-box-signs-_800-800.svg"
+        type="image/x-icon">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
@@ -71,7 +74,9 @@
     {% block body %} {% endblock %}
     <script>
         setTimeout(()=>{
-            var msg=document.getElementsByClassName("danger")[0].remove()
+            if(document.getElementsByClassName("danger")[0]){
+                document.getElementsByClassName("danger")[0].remove();      
+            }
 
         },2000)
     </script>       

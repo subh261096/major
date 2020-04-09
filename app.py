@@ -10,7 +10,7 @@ import pymysql
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:@Cerner26/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:subh261096@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -23,7 +23,7 @@ db = SQLAlchemy(app)
                     ########################## USER TABLE ######################
 class Users(db.Model):
     __tablename__ = 'UserData'
-    Id = db.Column(db.Integer, primary_key=True)
+    VoterId = db.Column(db.String(30), primary_key=True)
     Name = db.Column(db.String(30))
     Password = db.Column(db.String(500))
     RegisterDate = db.Column(DateTime, default=datetime.datetime.utcnow)
@@ -35,7 +35,8 @@ class ElectionsList(db.Model):
     __tablename__ = 'Elections'
     ElectionName = db.Column(db.Integer, primary_key=True)
     ListName=db.Column(db.String(50),primary_key=True)
-    LastModifiedDate = db.Column(DateTime, default=datetime.datetime.utcnow)
+    OpenedAt = db.Column(DateTime, default=datetime.datetime.utcnow)
+    closedAt = db.Column(DateTime,nullable=True)
                     ############################### END ##########################
 
 class Election(db.Model):
@@ -130,7 +131,7 @@ def signup():
 
 ######################################### LOG IN ######################################################
 @app.route('/login', methods=['GET', 'POST'])
-@already_logged_in
+# @already_logged_in
 def login():
     if request.method == "POST":
         attempted_username = request.form['username']
@@ -189,4 +190,5 @@ def submit_vote():
     
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)
