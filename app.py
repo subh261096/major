@@ -2,6 +2,7 @@ from wtforms import Form, TextField, PasswordField, validators
 from flask import Flask, render_template, request, flash, url_for, redirect, session, jsonify
 from HashingFunction import hashfunction
 from flask_sqlalchemy import SQLAlchemy
+from passlib.hash import sha256_crypt
 from functools import wraps, partial
 from sqlalchemy import DateTime
 import datetime
@@ -22,7 +23,7 @@ db = SQLAlchemy(app)
 
                     ########################## USER TABLE ######################
 class Users(db.Model):
-    __tablename__ = 'UserData'
+    __tablename__ = 'Users'
     VoterId = db.Column(db.String(30), primary_key=True)
     Name = db.Column(db.String(30))
     Password = db.Column(db.String(500))
@@ -100,13 +101,13 @@ def signup():
     if request.method == "POST" and form.validate():  # if the form info is valid
         username = form.username.data
         password = sha256_crypt.hash(str(form.password.data))
-        data_model = UserData(Name=username, Password=password)
+        data_model = Users(Name=username, Password=password)
         save_to_database = db.session
-        if(UserData.query.filter_by(Name=username).count() == 0):
+        if(Users.query.filter_by(Name=username).count() == 0):
             try:
                 save_to_database.add(data_model)
                 save_to_database.commit()
-                uid = UserData.query.filter_by(Name=username).first().Id
+                uid = Users.query.filter_by(Name=username).first().Id
                 flash('Registered Successfully!','success')
                 return redirect(url_for('login'))
             except:
@@ -137,10 +138,10 @@ def login():
         attempted_username = request.form['username']
         attempted_password = request.form['password']
 
-        if (UserData.query.filter_by(Name=attempted_username).count()) == 0:
+        if (Users.query.filter_by(Name=attempted_username).count()) == 0:
             flash("Username not found. Try a different username, or create an account.")
             return render_template("Login.html")
-        data_model = UserData.query.filter_by(Name=attempted_username).first()
+        data_model = Users.query.filter_by(Name=attempted_username).first()
         try:
             if attempted_username == data_model.Name and sha256_crypt.verify(attempted_password, data_model.Password):
                 session.permanent = True
