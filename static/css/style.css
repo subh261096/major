@@ -244,12 +244,9 @@ h2 {
 }
 
 body {
-    font-size: 13px;
-    line-height: 1.8;
     color: #222;
     background: #f8f8f8;
-    font-weight: 400;
-    font-family: Poppins;
+
 }
 
 .container {
@@ -313,10 +310,15 @@ body {
     padding: 75px 0;
 }
 
-.signup-form,
+.signup-form {
+    padding:30px;
+    width: 50%;
+    overflow: hidden;
+}
 .signup-image,
 .signin-form,
-.signin-image {
+.signin-image{
+    padding:10px;
     width: 50%;
     overflow: hidden;
 }
@@ -385,6 +387,7 @@ figure {
 }
 
 .form-group {
+    width: 400px;
     position: relative;
     margin-bottom: 25px;
     overflow: hidden;
@@ -758,6 +761,7 @@ label.valid:after {
     margin: 4px;
     margin-right: 0px;
     padding: 4px;
+    font-size: 30px;
     float:left;
     background-color:rgb(169, 210, 221);
     width:19%;
@@ -770,4 +774,8 @@ label.valid:after {
     padding:8px;
     float: right;
     background-color: rgb(228, 222, 226);
+}
+.form-error{
+    font-size: 12px;
+    color:red;
 }

@@ -21,14 +21,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <style>
+        .flash{
+            padding: 0px;
+            background-color: goldenrod;
+        }
         .danger{
             background-color: rgba(255, 94, 0, 0.979);
             color:white;
-            padding:30px;
+            padding:10px;
             font-size: medium;
         }
+        
     </style>
 
 </head>
@@ -67,15 +71,17 @@
     </header>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, message in messages %}
-    <div class="{{ category }}">{{ message }}</div>
+    <div class="flash">
+        <div class="{{ category }}">{{ message }}</div>
+    </div>
     {% endfor %}
     {% endwith %}
 
     {% block body %} {% endblock %}
     <script>
         setTimeout(()=>{
-            if(document.getElementsByClassName("danger")[0]){
-                document.getElementsByClassName("danger")[0].remove();      
+            if(document.getElementsByClassName("flash")[0]){
+                document.getElementsByClassName("flash")[0].remove();      
             }
 
         },2000)

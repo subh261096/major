@@ -58,8 +58,8 @@ class Election(db.Model):
 
 ######################################### REGISTRATION FORM #########################################
 class RegistrationForm(Form):
-    '''Child of a WTForm Form object...'''
-    username = TextField('Username', [validators.Length(min=3, max=20)])
+    username = TextField('Username', [validators.DataRequired(),validators.Length(min=4, max=20)])
+    voterId = TextField("VoterId", [validators.DataRequired(),validators.Length(min=8, max=18)])
     password = PasswordField('Password', [validators.DataRequired(),
                                             validators.EqualTo('confirm',
                                                             message="Passwords must match")])
@@ -96,8 +96,8 @@ def already_logged_in(f):
 ######################################### SIGN UP #####################################################
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
-    session.pop('_flashes', None)
     form = RegistrationForm(request.form)
+    
     if request.method == "POST" and form.validate():  # if the form info is valid
         username = form.username.data
         password = sha256_crypt.hash(str(form.password.data))
@@ -118,10 +118,7 @@ def signup():
         else:
             flash("User Already Exists! Please Enter Unique username!")
             return render_template('Signup.html', form=form)
-    if request.method == "POST" and form.validate() == False:  # if form info is invalid
-        flash('Invalid password, please try again')
-        return render_template('Signup.html', form=form)
-    return render_template("Signup.html")
+    return render_template("Signup.html",form=form)
 ######################################### END #########################################################
 
 
@@ -135,7 +132,7 @@ def signup():
 # @already_logged_in
 def login():
     if request.method == "POST":
-        attempted_username = request.form['username']
+        attempted_username = request.form['voterId']
         attempted_password = request.form['password']
 
         if (Users.query.filter_by(Name=attempted_username).count()) == 0:
@@ -181,7 +178,6 @@ def results():
 
 @is_logged_in
 @app.route('/submit_vote',methods=['POST'])
-
 def submit_vote():
     voter_id=request.form.get("voter_id")
     party=request.form.get("party_name")
