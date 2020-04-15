@@ -2,7 +2,18 @@
 
 <div class="contianer">
     <div class="sidebar">
-        <b><u>Active Votings</u></b>
+        <b><u>Active Elections</u></b>
+        {% if VoteList|length==0 %}
+            <p style="padding: 2px;">No Elections Found!!</p>
+        {% else %}
+            <ol style="font-size:25px;">
+            {% for list in VoteList %}
+                {% if list.IsOpen %}
+                <li><a href="#">{{list.ElectionName}}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ol>
+        {% endif %}
         
     </div>
     <div class="content text-center">

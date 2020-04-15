@@ -759,7 +759,7 @@ label.valid:after {
     border-radius: 5px;
     margin: 4px;
     margin-right: 0px;
-    padding: 4px;
+    padding: 10 px;
     font-size: 30px;
     float:left;
     background-color:rgb(169, 210, 221);

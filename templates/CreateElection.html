@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% block body %}
+<section class="sign-in">
+    <a name="section1"></a>
+    <div class="container">
+        <div class="signin-content">
+
+            <div class="signin-form">
+                <h2 class="form-title">Create Election</h2>
+                <form method="POST" class="register-form" id="login-form" action="{{url_for('createElection')}}">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Election Name</span>
+                        </div>
+                        <input type="text" class="form-control" name="ElectionName" aria-label="Small"
+                            aria-describedby="inputGroup-sizing-sm">
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">Purpose</span>
+                        </div>
+                        <textarea name="purpose" id="" cols="40" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group form-button ">
+                        <input class="btn btn-outline-success" type="submit" value="Create Election" name="success"
+                            id="success">
+                    </div>
+                </form>
+                <div id="message"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
