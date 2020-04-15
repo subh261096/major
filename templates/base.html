@@ -13,6 +13,7 @@
         href="https://cdn.clipart.email/68d68dbab9f7617f293b6f28b934a641_elections-election-icons-envelope-election-votes-box-signs-_800-800.svg"
         type="image/x-icon">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
@@ -85,6 +86,13 @@
             }
 
         },2000)
+        setInterval(()=>{
+        var errors=document.getElementsByClassName("form-error")
+            for (var i = 0; i < errors.length; i++) {
+            document.getElementsByClassName("form-error")[i].remove();
+        }
+
+        },5000)
     </script>       
     
 </body>

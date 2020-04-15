@@ -9,7 +9,7 @@
                 
                 <form method="POST" class="register-form" id="register-form" action="/signup">
                     <div class="form-group">
-                        <input type="username" name="username" id="username" placeholder="Your Username" value="{{ request.form.username }}" />
+                        <input type="username" name="username" id="username" placeholder="Your Username " value="{{ request.form.username }}" />  
                         {% for error in  form.username.errors %}
                             <span class="form-error">{{ error }}</span>
                         {% endfor %}
@@ -48,4 +48,5 @@
         </div>
     </div>
 </section>
+
 {% endblock %}
