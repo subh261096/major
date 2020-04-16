@@ -1,14 +1,10 @@
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>E-voting</title>
-
+    {% block head %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
+
     <link rel="icon"
         href="https://cdn.clipart.email/68d68dbab9f7617f293b6f28b934a641_elections-election-icons-envelope-election-votes-box-signs-_800-800.svg"
         type="image/x-icon">
@@ -18,39 +14,48 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
     <style>
-        .flash{
+        .flash {
             padding: 0px;
             background-color: goldenrod;
         }
-        .danger{
+
+        .danger {
             background-color: rgba(255, 94, 0, 0.979);
-            color:white;
-            padding:10px;
+            color: white;
+            padding: 10px;
             font-size: medium;
         }
-        
     </style>
-
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+    {% endblock %}
 </head>
 
 <body>
     <header class="fixed-header">
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark sticky-top">
             <a class="navbar-brand" href="/">E-Voting{{ session['IsAdmin'] }}</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
                     {% if session['IsAdmin'] %}
-                        {% if url_for(request.endpoint)=="/voting" %}
+                        {% if request.path=="/createElection" %}
                         <li class="nav-item active">
-                            <a class="nav-link" href="/createElection">Create Election<span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="/createElection">Create Election<span
+                                    class="sr-only">(current)</span></a>
                         </li>
                         {% else %}
                         <li class="nav-item">
@@ -59,7 +64,7 @@
                         {% endif %}
                     {% endif %}
 
-                    {% if url_for(request.endpoint)=="/voting" %}
+                    {% if request.path=="/ActiveElections" or ('/castvote' in request.path) %}
                     <li class="nav-item active">
                         <a class="nav-link" href="/ActiveElections">CastVote<span class="sr-only">(current)</span></a>
                     </li>
@@ -69,7 +74,7 @@
                     </li>
                     {% endif %}
 
-                    {% if url_for(request.endpoint)=="/results" %}
+                    {% if request.path=="/results" %}
                     <li class="nav-item active">
                         <a class="nav-link" href="/results">Results<span class="sr-only">(current)</span></a>
                     </li>
@@ -79,7 +84,7 @@
                     </li>
                     {% endif %}
 
-                    {% if url_for(request.endpoint)=="/audit" %}
+                    {% if request.path=="/audit" %}
                     <li class="nav-item  active">
                         <a class="nav-link active" href="#">Audit<span class="sr-only">(current)</span></a>
                     </li>
@@ -91,11 +96,11 @@
 
                 </ul>
                 {% if session['logged_in'] %}
-                    <ul class="navbar-nav mr-1 mt-0">
+                <ul class="navbar-nav mr-1 mt-0">
                     <li class="nav-item active">
                         <a class="nav-link" href="#">{{ session['UserName'] }}</a>
                     </li>
-                    </ul>
+                </ul>
                 <div class="form-inline mt-2 mr-2 ">
                     <form action="/logout">
                         <button type="submit" class="btn btn-outline-secondary">Logout</button>
@@ -113,36 +118,14 @@
                     </form>
                 </div>
                 {% endif %}
-                
+
 
             </div>
         </nav>
 
     </header>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for category, message in messages %}
-    <div class="flash">
-        <div class="{{ category }}">{{ message }}</div>
-    </div>
-    {% endfor %}
-    {% endwith %}
-
-    {% block body %} {% endblock %}
-    <script>
-        setTimeout(()=>{
-            if(document.getElementsByClassName("flash")[0]){
-                document.getElementsByClassName("flash")[0].remove();      
-            }
-
-        },2000)
-        setInterval(()=>{
-        var errors=document.getElementsByClassName("form-error")
-            for (var i = 0; i < errors.length; i++) {
-            document.getElementsByClassName("form-error")[i].remove();
-        }
-
-        },5000)
-    </script>       
+    {% block body %}{% endblock %}
     
 </body>
+
 </html>

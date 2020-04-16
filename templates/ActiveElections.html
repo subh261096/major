@@ -10,7 +10,7 @@
                     <ol style="font-size:25px;">
                         {% for list in VoteList %}
                             {% if list.IsOpen %}
-                                <li><a href="/castVote/{{ list.ElectionName }}">{{list.ElectionName}}</a></li>
+                                <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ol>

@@ -2,12 +2,30 @@ from wtforms import Form, TextField, PasswordField, validators
 from flask import Flask, render_template, request, flash, url_for, redirect, session, jsonify
 from HashingFunction import hashfunction
 from flask_sqlalchemy import SQLAlchemy
+from logging.config import dictConfig
 from passlib.hash import sha256_crypt
 from functools import wraps, partial
 from sqlalchemy import DateTime
 from datetime import timedelta
 import datetime
 import pymysql
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
+
 
 app = Flask(__name__)
 
@@ -255,13 +273,14 @@ def home():
 
 @app.route('/ActiveElections')
 @is_logged_in
-def hello_world():
+def ActiveElections():
     return render_template("ActiveElections.html", VoteList=Elections.query.all())
 
-@app.route('/castVote/<string:election_name>')
-def castVote(election_name):
-    print(election_name)
-    return render_template('CastVote.html')
+@app.route('/castvote/<string:ElectionName>')
+@is_logged_in
+def CastVote(ElectionName):
+    return render_template("CastVote.html", ElectionName=ElectionName)
+
 
 @app.route('/submit_vote',methods=['POST'])
 @is_logged_in
