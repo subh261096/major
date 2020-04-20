@@ -10,7 +10,8 @@
 
             <div class="signin-form">
                 <h3 class="form-title">{{ ElectionName }} Votings</h3>
-                <form method="POST" class="register-form" id="login-form" action="{{url_for('submit_vote')}}">
+                <form method="POST" class="register-form" id="login-form"
+                    action="/submit_vote/{{ ElectionName }}">
                     <div class="input-group input-group-sm mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-sm">Voter ID</span>

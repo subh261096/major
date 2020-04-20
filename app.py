@@ -252,14 +252,17 @@ def logout():
 def createElection():
     if request.method == "POST":
         ElectionName = request.form['ElectionName']
+        InitialMac = request.form['InitialMac']
         if (Elections.query.filter_by(ElectionName=ElectionName).count() != 0):
             flash("This Election name is already present!! Please Add Current Year in Election Name !!", "danger")
             return render_template("CreateElection.html")
         else:
             data_model = Elections(ElectionName=ElectionName,IsOpen=True)
+            vote_model = VotingList(ElectionName=ElectionName, VoterId="Admin", PrevMac="None", NewMac=InitialMac)
             save_to_database = db.session
             try:
                 save_to_database.add(data_model)
+                save_to_database.add(vote_model)
                 save_to_database.commit()
                 flash('Election Created Successfully!', 'success')
                 CloseElection()
@@ -278,7 +281,6 @@ def createElection():
 def endElection():
     if request.method == "POST":
         ElectionName = request.form.get("party_name")
-        print(ElectionName)
         data_model = Elections.query.get(ElectionName)
         save_to_database = db.session
         try:
@@ -308,18 +310,35 @@ def ElectionList():
 @app.route('/castvote/<string:ElectionName>')
 @is_logged_in
 def CastVote(ElectionName):
-    return render_template("CastVote.html", ElectionName=ElectionName)
+    if(VotingList.query.filter_by(ElectionName=ElectionName, VoterId=session['uid']).count() == 0):
+        return render_template("CastVote.html", ElectionName=ElectionName)
+    else:
+        flash("Already Voted")
+        return redirect(url_for("ElectionList"))
 
-
-@app.route('/submit_vote',methods=['POST'])
+@app.route('/submit_vote/<ElectionName>',methods=['GET','POST'])
 @is_logged_in
-def submit_vote():
-    voter_id=request.form.get("voter_id")
+def submit_vote(ElectionName):
     party=request.form.get("party_name")
-    mac1=hashfunction(str(party+voter_id))
-    print("\n\nGenerated MAC is: "+str(mac1).upper()+'\n\n')
+    prevMac = party+session['uid']
+    newMac = hashfunction(str(party+session['uid']),prevMac)
+    last_model = VotingList.query.filter_by(ElectionName=ElectionName)[-1] # getting latest record
+    new_model = VotingList(ElectionName=ElectionName,
+                        VoterId=session["uid"], PrevMac=last_model.NewMac, NewMac=newMac)
+    save_to_database=db.session
+    try:
+        save_to_database.add(new_model)
+        save_to_database.commit()
+        flash('Vote Ssubmitted Successfully!', 'success')
+        return redirect(url_for('home'))
+    except Exception as e:
+        save_to_database.rollback()
+        save_to_database.flush()
+        print(e)
+        flash("can't End Election Now!, please try again Later..")
+    print("\n\nGenerated MAC is: "+str(newMac).upper()+'\n\n')
     
-    return render_template("vote_submitted.html")
+    return redirect(url_for("ElectionList"))
 
 
 @app.route('/results')
