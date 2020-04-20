@@ -294,7 +294,7 @@ def endElection():
             save_to_database.flush()
             print(e)
             flash("can't End Election Now!, please try again Later..")
-    return render_template("EndElection.html", ElectionList=Elections.query.all())
+    return redirect(url_for("EndElection"))
 ######################################### END ###########################################################
 
 @app.route('/')
@@ -336,16 +336,17 @@ def submit_vote(ElectionName):
         save_to_database.flush()
         print(e)
         flash("can't End Election Now!, please try again Later..")
-    print("\n\nGenerated MAC is: "+str(newMac).upper()+'\n\n')
     
     return redirect(url_for("ElectionList"))
 
-
 @app.route('/results')
+@app.route('/results/<Election>')
 @is_logged_in
-def results():
-    return render_template("result.html")
-    
+def results(Election='Choose'):
+    if(Election == 'Choose'):
+        return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election)
+    else:
+        return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election, Listing=VotingList.query.filter_by(ElectionName=Election))
 
 if __name__ == '__main__':
     db.create_all()
