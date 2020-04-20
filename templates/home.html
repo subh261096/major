@@ -2,11 +2,11 @@
 
 <div class="contianer">
     <div class="sidebar">
-        <b><u>Active Elections</u></b>
+        <h4><b>Active Elections</b></h4>
         {% if VoteList|length==0 %}
             <p style="padding: 2px;">No Elections Found!!</p>
         {% else %}
-            <ol style="font-size:25px;">
+            <ol style="font-size:25px;list-style-type: none;">
             {% for list in VoteList %}
                 {% if list.IsOpen %}
                 <li><a href="#">{{list.ElectionName}}</a></li>
@@ -20,7 +20,7 @@
         <h1 class="cover-heading">Let's Vote</h1>
         <p class="lead" style="margin: 20px;padding:20px;">Changing the way and experience of Voting by then Help of Blockchain.</p>
         <p class="lead">
-            <a href="/voting" class="btn btn-lg btn-primary">Start Voting</a>
+            <a href="/ElectionList" class="btn btn-lg btn-primary">Start Voting</a>
             <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
         </p>
     </div>

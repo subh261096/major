@@ -8,6 +8,7 @@ from functools import wraps, partial
 from sqlalchemy import DateTime
 from datetime import timedelta
 import datetime
+import time
 import pymysql
 
 dictConfig({
@@ -57,7 +58,7 @@ class Elections(db.Model):
     __tablename__ = 'Elections'
     ElectionName = db.Column(db.String(30), primary_key=True)
     OpenedAt = db.Column(DateTime, default=datetime.datetime.utcnow)
-    ClosedAt = db.Column(DateTime,nullable=True)
+    ClosedAt = db.Column(DateTime, nullable=True, onupdate=datetime.datetime.utcnow)
     IsOpen= db.Column(db.Boolean,default=False)
     Elections = db.relationship('VotingList', cascade="all,delete", backref='Elections')
                     ############################### END ##########################
@@ -85,7 +86,11 @@ class RegistrationForm(Form):
     password = PasswordField('Password', [validators.DataRequired()])
     confirm = PasswordField('Confirm Password',[validators.EqualTo('password',
                                                             message="Passwords must match")])
-######################################### END #############################################
+######################################### END #######################################################
+
+def CloseElection():
+    time.sleep(2)
+    print("he")
 
 
 
@@ -99,7 +104,7 @@ def is_logged_in(f):
             return f(*args, **kwargs)
         else:
             flash('UnAuthorised!, Please Login First!', 'danger')
-            return redirect(url_for('home'))
+            return redirect(url_for('login'))
     return wrap
 ######################################### END #######################################################
 
@@ -247,8 +252,8 @@ def logout():
 def createElection():
     if request.method == "POST":
         ElectionName = request.form['ElectionName']
-        if (Elections.query.filter_by(ElectionName=ElectionName).count()) != 0:
-            flash("This Election anme is already present!! Please Add Current Year in Election Name !!", "danger")
+        if (Elections.query.filter_by(ElectionName=ElectionName).count() != 0):
+            flash("This Election name is already present!! Please Add Current Year in Election Name !!", "danger")
             return render_template("CreateElection.html")
         else:
             data_model = Elections(ElectionName=ElectionName,IsOpen=True)
@@ -257,6 +262,7 @@ def createElection():
                 save_to_database.add(data_model)
                 save_to_database.commit()
                 flash('Election Created Successfully!', 'success')
+                CloseElection()
                 return redirect(url_for('home'))
             except Exception as e:
                 save_to_database.rollback()
@@ -266,15 +272,38 @@ def createElection():
     return render_template("CreateElection.html")
 ######################################### END ###########################################################
 
+#################################### CREATE ELECTION ####################################################
+@app.route('/endElection', methods=['GET', 'POST'])
+@is_admin
+def endElection():
+    if request.method == "POST":
+        ElectionName = request.form.get("party_name")
+        print(ElectionName)
+        data_model = Elections.query.get(ElectionName)
+        save_to_database = db.session
+        try:
+            data_model.IsOpen = False
+            save_to_database.add(data_model)
+            save_to_database.commit()
+            flash('Election Ended Successfully!', 'success')
+            return redirect(url_for('home'))
+        except Exception as e:
+            save_to_database.rollback()
+            save_to_database.flush()
+            print(e)
+            flash("can't End Election Now!, please try again Later..")
+    return render_template("EndElection.html", ElectionList=Elections.query.all())
+######################################### END ###########################################################
+
 @app.route('/')
 def home():
-    return render_template("home.html", VoteList=Elections.query.all())
+    return render_template("home.html", VoteList=Elections.query.filter_by(IsOpen=True).all())
 
 
-@app.route('/ActiveElections')
+@app.route('/ElectionList')
 @is_logged_in
-def ActiveElections():
-    return render_template("ActiveElections.html", VoteList=Elections.query.all())
+def ElectionList():
+    return render_template("ElectionList.html", VoteList=Elections.query.all())
 
 @app.route('/castvote/<string:ElectionName>')
 @is_logged_in

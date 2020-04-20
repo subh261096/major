@@ -10,7 +10,6 @@
         type="image/x-icon">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
     <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
 
@@ -51,26 +50,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    {% if session['IsAdmin'] %}
-                        {% if request.path=="/createElection" %}
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/createElection">Create Election<span
-                                    class="sr-only">(current)</span></a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/createElection">Create Election</a>
-                        </li>
-                        {% endif %}
-                    {% endif %}
 
-                    {% if request.path=="/ActiveElections" or ('/castvote' in request.path) %}
+                    {% if request.path=="/ActiveElections" or ('Election' in request.path) %}
                     <li class="nav-item active">
-                        <a class="nav-link" href="/ActiveElections">CastVote<span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/ElectionList">Elections<span class="sr-only">(current)</span></a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/ActiveElections">CastVote</a>
+                        <a class="nav-link" href="/ElectionList">Elections</a>
                     </li>
                     {% endif %}
 
@@ -118,13 +105,28 @@
                     </form>
                 </div>
                 {% endif %}
-
-
             </div>
         </nav>
-
     </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash">
+        <div class="{{ category }}">{{ message }}</div>
+    </div>
+    {% endfor %}
+    {% endwith %}
+
     {% block body %}{% endblock %}
+
+    <script>
+        setTimeout(() => {
+            if (document.getElementsByClassName("flash")[0]) {
+                document.getElementsByClassName("flash")[0].remove();
+            }
+
+        }, 2000)
+    </script>
     
 </body>
 

@@ -1,0 +1,36 @@
+{% extends 'base.html' %} {% block body %}
+<section class="sign-in">
+    <div class="container">
+        <div class="signin-content">
+            <div class="contianer">
+                {% if session['IsAdmin'] %}
+                    <form action="/createElection"><button class="btn btn-primary">Create Election</button></form>
+                    <form action="/endElection"><button class="btn btn-primary">End Election</button></form>
+                {% endif %}
+                <h2 class="form-title">Active Elections</h2>
+                {% if VoteList|length==0 %}
+                    <p style="padding: 2px;">No Elections Found!!</p>
+                {% else %}
+                    <ol style="font-size:25px;">
+                        {% for list in VoteList %}
+                            {% if list.IsOpen %}
+                            <div>
+                                <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span style="color:green;padding:10px;">Open</span>
+                                </li>
+                            </div>
+                            {% else %}
+                            <div>
+                                <li><a
+                                        href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                                            style="color:grey;padding:10px;">Closed</span>
+                                </li>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                {% endif %}
+            </div>  
+        </div>
+    </div>
+</section>
+{% endblock%}
