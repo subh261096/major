@@ -1,0 +1,59 @@
+{% extends 'base.html' %} {% block body %}
+
+<div class="container">
+    <left>
+            <h3>Select Election</h3>
+    </left>
+    <select class="custom-select" id="inputGroupSelect01" name="party_name">
+        <option selected>{{ ElectionName }}</option>
+        {% for election in VoteList %}
+            {% if election.IsOpen and election.ElectionName!=ElectionName %}
+                <option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <br>
+    {{ Listing }}
+    <br><br><canvas id="myChart" width="975px" height="532px"></canvas><br><br>
+</div>
+
+<script>
+    jQuery(function($) {
+        $('select').on('change', function() {
+            var url = $(this).val();
+            if (url) {
+                window.location = "/results/"+ url;
+            }
+            return false;
+        });
+    });
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['BJP', 'Congress', 'JDU', 'CPM', 'AAP', 'Shiv Sena'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(255, 159, 64, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+    });
+</script>
+{% endblock%}

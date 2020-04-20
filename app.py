@@ -67,6 +67,7 @@ class VotingList(db.Model):
     __tablename__ = 'VotingList'
     ElectionName=db.Column(db.String(30),db.ForeignKey('Elections.ElectionName'))
     VoterId=db.Column(db.String(50),primary_key=True)
+    PartyName=db.Column(db.String(50),nullable=False)
     PrevMac = db.Column(db.String(16),nullable=False)
     NewMac = db.Column(db.String(16), nullable=False)
     LastModifiedDate = db.Column(DateTime, default=datetime.datetime.utcnow)    
@@ -258,7 +259,7 @@ def createElection():
             return render_template("CreateElection.html")
         else:
             data_model = Elections(ElectionName=ElectionName,IsOpen=True)
-            vote_model = VotingList(ElectionName=ElectionName, VoterId="Admin", PrevMac="None", NewMac=InitialMac)
+            vote_model = VotingList(ElectionName=ElectionName, VoterId="Admin",PartyName="None", PrevMac="None", NewMac=InitialMac)
             save_to_database = db.session
             try:
                 save_to_database.add(data_model)
@@ -323,7 +324,7 @@ def submit_vote(ElectionName):
     prevMac = party+session['uid']
     newMac = hashfunction(str(party+session['uid']),prevMac)
     last_model = VotingList.query.filter_by(ElectionName=ElectionName)[-1] # getting latest record
-    new_model = VotingList(ElectionName=ElectionName,
+    new_model = VotingList(ElectionName=ElectionName, PartyName=party,
                         VoterId=session["uid"], PrevMac=last_model.NewMac, NewMac=newMac)
     save_to_database=db.session
     try:
@@ -346,7 +347,14 @@ def results(Election='Choose'):
     if(Election == 'Choose'):
         return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election)
     else:
-        return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election, Listing=VotingList.query.filter_by(ElectionName=Election))
+        objects = VotingList.query.all()
+        party = {}
+        for object in objects:
+            if object.PartyName in party.items():
+                party[object.PartyName] += 1
+            else:
+                party[object.PartyName] = 1
+        return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election, Listing=party)
 
 if __name__ == '__main__':
     db.create_all()
