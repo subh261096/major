@@ -2,18 +2,22 @@
 <section class="sign-in">
     <div class="container" style="padding: 15px;">
         <h4 style="margin-top:10px;">Active Elections</h4>
-        <form action="/endElection" method="post">
-            <select class="custom-select" id="inputGroupSelect01" name="party_name">
-                <option selected>Choose Election</option>
-                {% for election in ElectionList %}
-                    {% if election.IsOpen %}
-                        <option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            
-            <button type="submit" class="btn btn-primary" style="margin-top:2px;">End Election</button>
-        </form>        
+            {% if ElectionList|length == 0 %}
+            <span style="color:grey;font-size:20px;">No Active Elections!!</span>
+            {% else %}
+            <form action="/endElection" method="post">
+                <select class="custom-select" id="inputGroupSelect01" name="party_name">
+                    <option selected>Choose Election</option>
+                    {% for election in ElectionList %}
+                        {% if election.IsOpen %}
+                            <option option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-primary" style="margin-top:2px;">End Election</button>
+            </form>
+            {% endif %}
     </div>
 </section>
 {% endblock%}

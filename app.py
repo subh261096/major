@@ -259,7 +259,7 @@ def createElection():
             return render_template("CreateElection.html")
         else:
             data_model = Elections(ElectionName=ElectionName,IsOpen=True)
-            vote_model = VotingList(ElectionName=ElectionName, VoterId="Admin",PartyName="None", PrevMac="None", NewMac=InitialMac)
+            vote_model = VotingList(ElectionName=ElectionName, VoterId=(ElectionName+"Admin"), PartyName="None", PrevMac="None", NewMac=InitialMac)
             save_to_database = db.session
             try:
                 save_to_database.add(data_model)
@@ -283,6 +283,7 @@ def endElection():
     if request.method == "POST":
         ElectionName = request.form.get("party_name")
         data_model = Elections.query.get(ElectionName)
+        print("hi")
         save_to_database = db.session
         try:
             data_model.IsOpen = False
@@ -295,7 +296,7 @@ def endElection():
             save_to_database.flush()
             print(e)
             flash("can't End Election Now!, please try again Later..")
-    return redirect(url_for("EndElection"))
+    return render_template("EndElection.html",ElectionList=Elections.query.filter_by(IsOpen=True).all())
 ######################################### END ###########################################################
 
 @app.route('/')
@@ -347,14 +348,16 @@ def results(Election='Choose'):
     if(Election == 'Choose'):
         return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election)
     else:
-        objects = VotingList.query.all()
+        objects = VotingList.query.filter_by(ElectionName=Election).all()
         party = {}
         for object in objects:
             if object.PartyName in party.items():
                 party[object.PartyName] += 1
             else:
                 party[object.PartyName] = 1
-        return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election, Listing=party)
+        party.pop("None")
+        print(party)
+        return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.filter_by(ElectionName=Election).first(), Listing=party)
 
 if __name__ == '__main__':
     db.create_all()
