@@ -1,20 +1,50 @@
-{% extends 'base.html' %} {% block body %}
+{% extends 'base.html' %}
+{% block title %}
+E-Voting
+{% endblock %}
+{% block body %}
 
 <div class="contianer">
     <div class="sidebar">
         <h4><b>Active Elections</b></h4>
-        {% if VoteList|length==0 %}
-            <p style="padding: 2px;">No Elections Found!!</p>
+        {% if VoteList.IsOpen|length==0 %}
+            <p style="padding-left: 2px;">No Active Elections!!</p>
         {% else %}
-            <ol style="font-size:25px;list-style-type: none;">
+            <ol style="font-size:25px;list-style-type: none;padding-left:2px;">
             {% for list in VoteList %}
                 {% if list.IsOpen %}
-                <li><a href="#">{{list.ElectionName}}</a></li>
+                <div>
+                    <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                            style="color:green;padding:10px;">Open</span>
+                    </li>
+                </div>
                 {% endif %}
             {% endfor %}
             </ol>
         {% endif %}
-        
+
+        <h4><b>All Elections</b></h4>
+        {% if VoteList|length==0 %}
+        <p style="padding: 2px;">No Elections Found!!</p>
+        {% else %}
+        <ol style="font-size:25px;list-style-type: none;padding-left:2px;">
+            {% for list in VoteList %}
+            {% if list.IsOpen %}
+            <div>
+                <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                        style="color:green;padding:10px;">Open</span>
+                </li>
+            </div>
+            {% else %}
+            <div>
+                <li><a href='/results/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                        style="color:grey;padding:10px;">Closed</span>
+                </li>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </ol>
+        {% endif %}
     </div>
     <div class="content text-center">
         <h1 class="cover-heading">Let's Vote</h1>

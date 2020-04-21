@@ -775,3 +775,21 @@ label.valid:after {
     font-size: 12px;
     color:red;
 }
+.flash .info {
+            background-color: rgba(217, 238, 32, 0.979);
+            color: white;
+            font-size: medium;
+            padding:10px;
+        }
+.flash .success {
+    background-color: rgba(25, 175, 20, 0.979);
+    color: white;
+    font-size: medium;
+    padding:10px;
+}
+.flash .danger {
+    background-color: rgba(255, 94, 0, 0.979);
+    color: white;
+    font-size: medium;
+    padding:10px;
+}

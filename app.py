@@ -65,7 +65,7 @@ class Elections(db.Model):
 
 class VotingList(db.Model):
     __tablename__ = 'VotingList'
-    ElectionName=db.Column(db.String(30),db.ForeignKey('Elections.ElectionName'))
+    ElectionName=db.Column(db.String(30),db.ForeignKey('Elections.ElectionName'),primary_key=True)
     VoterId=db.Column(db.String(50),primary_key=True)
     PartyName=db.Column(db.String(50),nullable=False)
     PrevMac = db.Column(db.String(16),nullable=False)
@@ -152,16 +152,16 @@ def signup():
                 save_to_database.add(data_model)
                 save_to_database.commit()
                 uid = Users.query.filter_by(UserName=username).first().VoterId
-                flash('Registered Successfully!', 'success')
+                flash('Registered Successfully!', "success")
                 return redirect(url_for('login'))
             except Exception as e:
                 save_to_database.rollback()
                 save_to_database.flush()
                 print(e)
-                flash("can't Register Now!, please try again Later..")
+                flash("can't Register Now!, please try again Later..", "info")
             return render_template('Signup.html', form=form)
         else:
-            flash("User Already Exists! Please Enter Unique username!")
+            flash("User Already Exists! Please Enter Unique username!", "info")
             return render_template('Signup.html', form=form)
     return render_template("Signup.html", form=form)
 ######################################### END #########################################################
@@ -192,10 +192,10 @@ def login():
                 session['logged_in'] = True
                 session['uid'] = data_model.VoterId
                 session['UserName'] = data_model.UserName
-                flash("Welcome %s!" % (data_model.UserName),'')
+                flash("Welcome %s!" % (data_model.UserName),"success")
                 return redirect(url_for("home"))
             else:
-                flash("Incorrect password, try again")
+                flash("Incorrect password, try again","danger")
                 return render_template("Login.html")
         except Exception as e:
             return str(e)
@@ -224,10 +224,10 @@ def Adminlogin():
                 session['IsAdmin'] = data_model.IsAdmin
                 session['uid'] = data_model.VoterId
                 session['UserName'] = data_model.UserName
-                flash("Welcome %s!" % (data_model.UserName), '')
+                flash("Welcome %s!" % (data_model.UserName),"success")
                 return redirect(url_for("home"))
             else:
-                flash("Incorrect password, try again")
+                flash("Incorrect password, try again","danger")
                 return render_template("AdminLogin.html")
         except Exception as e:
             return str(e)
@@ -243,7 +243,7 @@ def logout():
     session.pop('logged_in', False)
     session.pop('username', None)
     session.pop('IsAdmin',False)
-    flash("You have been logged out.")
+    flash("You have been logged out.","success")
     return redirect(url_for('home'))
 ######################################### END ###########################################################
 
@@ -265,14 +265,13 @@ def createElection():
                 save_to_database.add(data_model)
                 save_to_database.add(vote_model)
                 save_to_database.commit()
-                flash('Election Created Successfully!', 'success')
-                CloseElection()
+                flash('Election Created Successfully!',"success")
                 return redirect(url_for('home'))
             except Exception as e:
                 save_to_database.rollback()
                 save_to_database.flush()
                 print(e)
-                flash("can't Create Rights Now!, please try again Later..")
+                flash("can't Create Rights Now!, please try again Later..","info")
     return render_template("CreateElection.html")
 ######################################### END ###########################################################
 
@@ -289,19 +288,19 @@ def endElection():
             data_model.IsOpen = False
             save_to_database.add(data_model)
             save_to_database.commit()
-            flash('Election Ended Successfully!', 'success')
+            flash('Election Ended Successfully!', "success")
             return redirect(url_for('home'))
         except Exception as e:
             save_to_database.rollback()
             save_to_database.flush()
             print(e)
-            flash("can't End Election Now!, please try again Later..")
+            flash("can't End Election Now!, please try again Later..","info")
     return render_template("EndElection.html",ElectionList=Elections.query.filter_by(IsOpen=True).all())
 ######################################### END ###########################################################
 
 @app.route('/')
 def home():
-    return render_template("home.html", VoteList=Elections.query.filter_by(IsOpen=True).all())
+    return render_template("home.html", VoteList=Elections.query.all())
 
 
 @app.route('/ElectionList')
@@ -315,7 +314,7 @@ def CastVote(ElectionName):
     if(VotingList.query.filter_by(ElectionName=ElectionName, VoterId=session['uid']).count() == 0):
         return render_template("CastVote.html", ElectionName=ElectionName)
     else:
-        flash("Already Voted")
+        flash("Already Voted","info")
         return redirect(url_for("ElectionList"))
 
 @app.route('/submit_vote/<ElectionName>',methods=['GET','POST'])
@@ -331,13 +330,13 @@ def submit_vote(ElectionName):
     try:
         save_to_database.add(new_model)
         save_to_database.commit()
-        flash('Vote Ssubmitted Successfully!', 'success')
+        flash('Vote Ssubmitted Successfully!', "success")
         return redirect(url_for('home'))
     except Exception as e:
         save_to_database.rollback()
         save_to_database.flush()
         print(e)
-        flash("can't End Election Now!, please try again Later..")
+        flash("can't End Election Now!, please try again Later..","info")
     
     return redirect(url_for("ElectionList"))
 
