@@ -332,7 +332,7 @@ def submit_vote(ElectionName):
     try:
         save_to_database.add(new_model)
         save_to_database.commit()
-        flash('Vote Ssubmitted Successfully!', "success")
+        flash('Vote Submitted Successfully!', "success")
         return redirect(url_for('home'))
     except Exception as e:
         save_to_database.rollback()
