@@ -31,7 +31,7 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://njewuwdeygkbuk:089cd23b874c17cf642ad04ac502feb994246685d616831bbe028957385e8c0a@ec2-18-210-51-239.compute-1.amazonaws.com:5432/d5vc01lgh6uma7'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -282,7 +282,7 @@ def endElection():
     if request.method == "POST":
         ElectionName = request.form.get("party_name")
         data_model = Elections.query.get(ElectionName)
-        print("hi")
+        print(data_model)
         save_to_database = db.session
         try:
             data_model.IsOpen = False
@@ -300,13 +300,13 @@ def endElection():
 
 @app.route('/')
 def home():
-    return render_template("home.html", VoteList=Elections.query.all())
+    return render_template("home.html", ElectionList=Elections.query.all(), ActiveElection=Elections.query.filter_by(IsOpen=True).all())
 
 
 @app.route('/ElectionList')
 @is_logged_in
 def ElectionList():
-    return render_template("ElectionList.html", VoteList=Elections.query.all())
+    return render_template("ElectionList.html", ElectionList=Elections.query.all(), ActiveElection=Elections.query.filter_by(IsOpen=True).all())
 
 @app.route('/castvote/<string:ElectionName>')
 @is_logged_in

@@ -10,11 +10,11 @@
                 <div class="AllElections"
                     style="float:left;margin-left:10px;background:rgb(214, 202, 202);padding:10px;border-radius:5px;">
                     <h2 class="form-title">All Elections</h2>
-                    {% if VoteList|length==0 %}
+                    {% if ElectionList|length==0 %}
                         <p style="padding: 2px;">No Elections Found!!</p>
                     {% else %}
                         <ul style="font-size:25px;list-style-type: none;padding-left: 0;">
-                            {% for list in VoteList %}
+                            {% for list in ElectionList %}
                                 {% if list.IsOpen %}
                                 <div>
                                     <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span style="color:green;padding:10px;">Open</span>
@@ -35,11 +35,11 @@
                 <div class="AllElections"
                     style="float:left;margin-left:20px;background:rgb(214, 202, 202);padding:10px;border-radius:5px;">
                     <h2 class="form-title">Active Elections</h2>
-                    {% if VoteList.IsOpen|length==0 %}
+                    {% if ActiveElection|length==0 %}
                     <p style="padding: 2px;">No Active Elections!!</p>
                     {% else %}
                     <ul style="font-size:25px;list-style-type: none;padding-left: 0;">
-                        {% for list in VoteList %}
+                        {% for list in ActiveElection %}
                         {% if list.IsOpen %}
                         <div>
                             <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
