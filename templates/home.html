@@ -7,11 +7,11 @@ E-Voting
 <div class="contianer">
     <div class="sidebar">
         <h4><b>Active Elections</b></h4>
-        {% if VoteList.IsOpen|length==0 %}
+        {% if ActiveElection|length==0 %}
             <p style="padding-left: 2px;">No Active Elections!!</p>
         {% else %}
             <ol style="font-size:25px;list-style-type: none;padding-left:2px;">
-            {% for list in VoteList %}
+            {% for list in ActiveElection %}
                 {% if list.IsOpen %}
                 <div>
                     <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
@@ -24,11 +24,11 @@ E-Voting
         {% endif %}
 
         <h4><b>All Elections</b></h4>
-        {% if VoteList|length==0 %}
+        {% if ElectionList|length==0 %}
         <p style="padding: 2px;">No Elections Found!!</p>
         {% else %}
         <ol style="font-size:25px;list-style-type: none;padding-left:2px;">
-            {% for list in VoteList %}
+            {% for list in ElectionList %}
             {% if list.IsOpen %}
             <div>
                 <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
