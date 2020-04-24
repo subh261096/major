@@ -31,7 +31,7 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://njewuwdeygkbuk:089cd23b874c17cf642ad04ac502feb994246685d616831bbe028957385e8c0a@ec2-18-210-51-239.compute-1.amazonaws.com:5432/d5vc01lgh6uma7'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -345,7 +345,7 @@ def submit_vote(ElectionName):
 @is_logged_in
 def results(Election='Choose'):
     if(Election == 'Choose'):
-        return render_template("results.html", VoteList=Elections.query.all(), ElectionName=Election)
+        return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.first())
     else:
         objects = VotingList.query.filter_by(ElectionName=Election).all()
         party = {}
