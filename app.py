@@ -31,7 +31,7 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:subh261096@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://syblggjnonkpkk:c901ff9c78e94b9415502d769010a71961e6a82415186d00cac26ff35eb05fd2@ec2-34-225-82-212.compute-1.amazonaws.com:5432/dapqepesnascmg'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
