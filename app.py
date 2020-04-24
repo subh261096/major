@@ -31,7 +31,8 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://njewuwdeygkbuk:089cd23b874c17cf642ad04ac502feb994246685d616831bbe028957385e8c0a@ec2-18-210-51-239.compute-1.amazonaws.com:5432/d5vc01lgh6uma7'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://njewuwdeygkbuk:089cd23b874c17cf642ad04ac502feb994246685d616831bbe028957385e8c0a@ec2-18-210-51-239.compute-1.amazonaws.com:5432/d5vc01lgh6uma7'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -68,6 +69,7 @@ class VotingList(db.Model):
     ElectionName=db.Column(db.String(30),db.ForeignKey('Elections.ElectionName'),primary_key=True)
     VoterId=db.Column(db.String(50),primary_key=True)
     PartyName=db.Column(db.String(50),nullable=False)
+    MacCount=db.Column(db.Integer,nullable=False)
     PrevMac = db.Column(db.String(16),nullable=False)
     NewMac = db.Column(db.String(16), nullable=False)
     LastModifiedDate = db.Column(DateTime, default=datetime.datetime.utcnow)    
@@ -259,7 +261,7 @@ def createElection():
             return render_template("CreateElection.html")
         else:
             data_model = Elections(ElectionName=ElectionName,IsOpen=True)
-            vote_model = VotingList(ElectionName=ElectionName, VoterId=(ElectionName+"Admin"), PartyName="None", PrevMac="None", NewMac=InitialMac)
+            vote_model = VotingList(ElectionName=ElectionName, VoterId=(ElectionName+"Admin"), PartyName="None",MacCount=0, PrevMac="None", NewMac=InitialMac)
             save_to_database = db.session
             try:
                 save_to_database.add(data_model)
@@ -324,7 +326,7 @@ def submit_vote(ElectionName):
     prevMac = party+session['uid']
     newMac = hashfunction(str(party+session['uid']),prevMac)
     last_model = VotingList.query.filter_by(ElectionName=ElectionName)[-1] # getting latest record
-    new_model = VotingList(ElectionName=ElectionName, PartyName=party,
+    new_model = VotingList(ElectionName=ElectionName, PartyName=party,MacCount=(last_model.MacCount+1),
                         VoterId=session["uid"], PrevMac=last_model.NewMac, NewMac=newMac)
     save_to_database=db.session
     try:
