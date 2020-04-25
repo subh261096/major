@@ -32,7 +32,7 @@ app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://njewuwdeygkbuk:089cd23b874c17cf642ad04ac502feb994246685d616831bbe028957385e8c0a@ec2-18-210-51-239.compute-1.amazonaws.com:5432/d5vc01lgh6uma7'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -160,7 +160,7 @@ def signup():
                 save_to_database.rollback()
                 save_to_database.flush()
                 print(e)
-                flash("can't Register Now!, please try again Later..", "info")
+                flash("Can't Register Now!, please try again Later..", "info")
             return render_template('Signup.html', form=form)
         else:
             flash("User Already Exists! Please Enter Unique username!", "info")
@@ -273,7 +273,7 @@ def createElection():
                 save_to_database.rollback()
                 save_to_database.flush()
                 print(e)
-                flash("can't Create Rights Now!, please try again Later..","info")
+                flash("Can't Create Rights Now!, please try again Later..","info")
     return render_template("CreateElection.html")
 ######################################### END ###########################################################
 
@@ -296,7 +296,7 @@ def endElection():
             save_to_database.rollback()
             save_to_database.flush()
             print(e)
-            flash("can't End Election Now!, please try again Later..","info")
+            flash("Can't End Election Now!, please try again Later..","info")
     return render_template("EndElection.html",ElectionList=Elections.query.filter_by(IsOpen=True).all())
 ######################################### END ###########################################################
 
@@ -338,7 +338,7 @@ def submit_vote(ElectionName):
         save_to_database.rollback()
         save_to_database.flush()
         print(e)
-        flash("can't End Election Now!, please try again Later..","info")
+        flash("Can't End Election Now!, please try again Later..","info")
     
     return redirect(url_for("ElectionList"))
 
