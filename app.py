@@ -31,8 +31,8 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -316,7 +316,7 @@ def CastVote(ElectionName):
     if(VotingList.query.filter_by(ElectionName=ElectionName, VoterId=session['uid']).count() == 0):
         return render_template("CastVote.html", ElectionName=ElectionName)
     else:
-        flash("Already Voted","info")
+        flash("Vote Already submitted for"+str(ElectionName),"info")
         return redirect(url_for("ElectionList"))
 
 @app.route('/submit_vote/<ElectionName>',methods=['GET','POST'])
@@ -362,4 +362,5 @@ def results(Election='Choose'):
 
 if __name__ == '__main__':
     db.create_all()
-    app.run(debug=True)
+    app.run()
+    # app.run(debug=True)
