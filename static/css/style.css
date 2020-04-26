@@ -777,7 +777,7 @@ label.valid:after {
 }
 
 .flash .info {
-            background-color: rgba(217, 238, 32, 0.979);
+            background-color: rgba(175, 190, 34, 0.979);
             color: white;
             font-size: medium;
             padding:10px;

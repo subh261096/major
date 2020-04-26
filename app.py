@@ -323,28 +323,36 @@ def CastVote(ElectionName):
 @is_logged_in
 def submit_vote(ElectionName):
     party=request.form.get("party_name")
-    prevMac = party+session['uid']
-    newMac = hashfunction(str(party+session['uid']),prevMac)
-    last_model = VotingList.query.filter_by(ElectionName=ElectionName)[-1] # getting latest record
-    new_model = VotingList(ElectionName=ElectionName, PartyName=party,MacCount=(last_model.MacCount+1),
-                        VoterId=session["uid"], PrevMac=last_model.NewMac, NewMac=newMac)
+    last_model = VotingList.query.filter_by(ElectionName=ElectionName)[-1]  # getting latest record
+    
+    new_model = VotingList(ElectionName=ElectionName, 
+                        PartyName=party,
+                        MacCount=(last_model.MacCount+1),
+                        VoterId=session["uid"],
+                        PrevMac=last_model.NewMac, 
+                        NewMac=hashfunction(str(party+session['uid']), last_model.NewMac))
     
     #Verification of votings
     VoteList=VotingList.query.filter_by(ElectionName=ElectionName).order_by("MacCount").all()
-    
-    prevMac="None"
-    while(prevMac!=new_model.PrevMac):
-        for votes in VoteList:
-            if(votes.PrevMac==prevMac):
-                prevMac = votes.NewMac
+    if(len(VoteList)==1):
+        if(last_model.NewMac==new_model.PrevMac):
+            tempNewMac = hashfunction(str(new_model.PartyName+new_model.VoterId), new_model.PrevMac)
+            print(tempNewMac)
+    else:
+        tempNewMac=VoteList[0].NewMac
+        while(tempNewMac!=new_model.NewMac):
+            for votes in VoteList:
+                if(tempNewMac == votes.PrevMac):
+                    tempNewMac = hashfunction(
+                        str(votes.PartyName+votes.VoterId), votes.PrevMac)
                 
-    if(prevMac==new_model.PrevMac):
-        flash("Verified the Votings","success")
+    if(tempNewMac == new_model.NewMac):
+        print("Verified the Votings")
         save_to_database=db.session
         try:
             save_to_database.add(new_model)
             save_to_database.commit()
-            flash('Vote Submitted Successfully!', "success")
+            flash('Votings Verified and Vote Submitted Successfully!', "success")
             return redirect(url_for('home'))
         except Exception as e:
             save_to_database.rollback()
