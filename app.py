@@ -31,8 +31,8 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -316,7 +316,7 @@ def CastVote(ElectionName):
     if(VotingList.query.filter_by(ElectionName=ElectionName, VoterId=session['uid']).count() == 0):
         return render_template("CastVote.html", ElectionName=ElectionName)
     else:
-        flash("Vote Already submitted for"+str(ElectionName),"info")
+        flash("Vote Already submitted for "+str(ElectionName),"info")
         return redirect(url_for("ElectionList"))
 
 @app.route('/submit_vote/<ElectionName>',methods=['GET','POST'])
@@ -328,18 +328,32 @@ def submit_vote(ElectionName):
     last_model = VotingList.query.filter_by(ElectionName=ElectionName)[-1] # getting latest record
     new_model = VotingList(ElectionName=ElectionName, PartyName=party,MacCount=(last_model.MacCount+1),
                         VoterId=session["uid"], PrevMac=last_model.NewMac, NewMac=newMac)
-    save_to_database=db.session
-    try:
-        save_to_database.add(new_model)
-        save_to_database.commit()
-        flash('Vote Submitted Successfully!', "success")
-        return redirect(url_for('home'))
-    except Exception as e:
-        save_to_database.rollback()
-        save_to_database.flush()
-        print(e)
-        flash("Can't End Election Now!, please try again Later..","info")
     
+    #Verification of votings
+    VoteList=VotingList.query.filter_by(ElectionName=ElectionName).order_by("MacCount").all()
+    prevMac="None"
+    while(prevMac!=new_model.PrevMac):
+        for votes in VoteList:
+            if(votes.PrevMac==prevMac):
+                prevMac = votes.NewMac
+                print(prevMac)
+                
+    if(prevMac==new_model.PrevMac):
+        flash("Verified the Votings","success")
+        save_to_database=db.session
+        try:
+            save_to_database.add(new_model)
+            save_to_database.commit()
+            flash('Vote Submitted Successfully!', "success")
+            return redirect(url_for('home'))
+        except Exception as e:
+            save_to_database.rollback()
+            save_to_database.flush()
+            print(e)
+            flash("Can't End Election Now!, please try again Later..","info")
+    else:
+        flash("Voting List have been Altered!!","danger")
+        return redirect(url_for("ElectionList"))
     return redirect(url_for("ElectionList"))
 
 @app.route('/results')
@@ -362,5 +376,5 @@ def results(Election='Choose'):
 
 if __name__ == '__main__':
     db.create_all()
-    app.run()
-    # app.run(debug=True)
+    # app.run()
+    app.run(debug=True)
