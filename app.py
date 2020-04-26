@@ -323,29 +323,30 @@ def CastVote(ElectionName):
 @is_logged_in
 def submit_vote(ElectionName):
     party=request.form.get("party_name")
-    last_model = VotingList.query.filter_by(ElectionName=ElectionName)[-1]  # getting latest record
+    VoteList = VotingList.query.filter_by(
+        ElectionName=ElectionName).order_by("MacCount").all()
+    last_model = VoteList[-1]  # getting latest record
     
-    new_model = VotingList(ElectionName=ElectionName, 
+    new_model = VotingList(
+                        ElectionName=ElectionName, 
                         PartyName=party,
                         MacCount=(last_model.MacCount+1),
                         VoterId=session["uid"],
                         PrevMac=last_model.NewMac, 
-                        NewMac=hashfunction(str(party+session['uid']), last_model.NewMac))
-    
+                        NewMac=hashfunction(str(party+session['uid']), last_model.NewMac)
+                        )
     #Verification of votings
-    VoteList=VotingList.query.filter_by(ElectionName=ElectionName).order_by("MacCount").all()
     if(len(VoteList)==1):
         if(last_model.NewMac==new_model.PrevMac):
             tempNewMac = hashfunction(str(new_model.PartyName+new_model.VoterId), new_model.PrevMac)
-            print(tempNewMac)
     else:
         tempNewMac=VoteList[0].NewMac
-        while(tempNewMac!=new_model.NewMac):
-            for votes in VoteList:
-                if(tempNewMac == votes.PrevMac):
-                    tempNewMac = hashfunction(
-                        str(votes.PartyName+votes.VoterId), votes.PrevMac)
-                
+        for votes in VoteList[1:]:
+            if(tempNewMac == votes.PrevMac):
+                tempNewMac = hashfunction(str(votes.PartyName+votes.VoterId), votes.PrevMac)
+        if(tempNewMac == new_model.PrevMac):
+            tempNewMac = hashfunction(str(new_model.PartyName+new_model.VoterId), new_model.PrevMac)
+    #If Verified            
     if(tempNewMac == new_model.NewMac):
         print("Verified the Votings")
         save_to_database=db.session
@@ -359,7 +360,7 @@ def submit_vote(ElectionName):
             save_to_database.flush()
             print(e)
             flash("Can't End Election Now!, please try again Later..","info")
-    else:
+    else: #Not Verified
         flash("Voting List have been Altered!!","danger")
         return redirect(url_for("ElectionList"))
     return redirect(url_for("ElectionList"))
