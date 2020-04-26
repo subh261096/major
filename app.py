@@ -31,8 +31,8 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -331,12 +331,12 @@ def submit_vote(ElectionName):
     
     #Verification of votings
     VoteList=VotingList.query.filter_by(ElectionName=ElectionName).order_by("MacCount").all()
+    
     prevMac="None"
     while(prevMac!=new_model.PrevMac):
         for votes in VoteList:
             if(votes.PrevMac==prevMac):
                 prevMac = votes.NewMac
-                print(prevMac)
                 
     if(prevMac==new_model.PrevMac):
         flash("Verified the Votings","success")
@@ -376,5 +376,5 @@ def results(Election='Choose'):
 
 if __name__ == '__main__':
     db.create_all()
-    # app.run()
-    app.run(debug=True)
+    app.run()
+    # app.run(debug=True)
