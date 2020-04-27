@@ -272,7 +272,7 @@ def logout():
 def createElection():
     form=CreateElectionForm(request.form)
     
-    if request.method == "POST":
+    if request.method == "POST" and form.validate():
         candList=[]
         for key in request.form.to_dict():
             if key.startswith("Candidate-"):
