@@ -11,20 +11,26 @@ Create Election
             <div class="signin-form">
                 <h2 class="form-title">Create Election</h2>
                 <form method="POST" class="register-form" id="login-form" action="{{url_for('createElection')}}">
-                    <div class="input-group input-group-sm mb-3">
+                    <div class="input-group input-group-sm mb-1">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-sm">Election Name</span>
                         </div>
                         <input type="text" class="form-control" name="ElectionName" aria-label="Small"
                             aria-describedby="inputGroup-sizing-sm">
                     </div>
-                    <div class="input-group input-group-sm mb-3">
+                    {% for error in  form.ElectionName.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                    <div class="input-group input-group-sm mb-1">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="inputGroup-sizing-sm">Initial Mac</span>
                         </div>
                         <input type="text" class="form-control" name="InitialMac" aria-label="Small"
                             aria-describedby="inputGroup-sizing-sm">
                     </div>
+                    {% for error in  form.InitialMac.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
 
                     <div class="form-group form-button ">
                         <input class="btn btn-outline-success" type="submit" value="Create Election" name="success"

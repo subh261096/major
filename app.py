@@ -91,6 +91,16 @@ class RegistrationForm(Form):
                                                             message="Passwords must match")])
 ######################################### END #######################################################
 
+######################################### CREATEELECTION FORM #########################################
+
+
+class CreateElectionForm(Form):
+    ElectionName = TextField(
+        'ElectionName', [validators.DataRequired(), validators.Length(min=4, max=20)])
+    InitialMac = TextField(
+        "voterId", [validators.DataRequired(), validators.Length(min=8, max=16)])
+######################################### END #######################################################
+
 def CloseElection():
     time.sleep(2)
     print("he")
@@ -120,7 +130,7 @@ def is_admin(f):
         if 'IsAdmin' in session:
             return f(*args, **kwargs)
         else:
-            flash('Only Admin is Allowed !!, Please Login as Admin First!', 'danger')
+            flash('Only Admin is Allowed !! Please Login as Admin First!', 'danger')
             return redirect(url_for('Adminlogin'))
     return wrap
 ######################################### END #######################################################
@@ -253,9 +263,10 @@ def logout():
 @app.route('/createElection',methods=['GET','POST'])
 @is_admin
 def createElection():
-    if request.method == "POST":
-        ElectionName = request.form['ElectionName']
-        InitialMac = request.form['InitialMac']
+    form=CreateElectionForm(request.form)
+    if request.method == "POST" and form.validate():
+        ElectionName = form.ElectionName.data
+        InitialMac = form.InitialMac.data
         if (Elections.query.filter_by(ElectionName=ElectionName).count() != 0):
             flash("This Election name is already present!! Please Add Current Year in Election Name !!", "danger")
             return render_template("CreateElection.html")
@@ -274,7 +285,7 @@ def createElection():
                 save_to_database.flush()
                 print(e)
                 flash("Can't Create Rights Now!, please try again Later..","info")
-    return render_template("CreateElection.html")
+    return render_template("CreateElection.html",form=form)
 ######################################### END ###########################################################
 
 #################################### CREATE ELECTION ####################################################
@@ -335,15 +346,20 @@ def submit_vote(ElectionName):
                         PrevMac=last_model.NewMac, 
                         NewMac=hashfunction(str(party+session['uid']), last_model.NewMac)
                         )
+    
     #Verification of votings
     if(len(VoteList)==1):
         if(last_model.NewMac==new_model.PrevMac):
             tempNewMac = hashfunction(str(new_model.PartyName+new_model.VoterId), new_model.PrevMac)
+        else:
+            print("Voting modified for "+new_model.VoterId)
     else:
         tempNewMac=VoteList[0].NewMac
         for votes in VoteList[1:]:
             if(tempNewMac == votes.PrevMac):
                 tempNewMac = hashfunction(str(votes.PartyName+votes.VoterId), votes.PrevMac)
+            else:
+                print("Voting modified for "+votes.VoterId)
         if(tempNewMac == new_model.PrevMac):
             tempNewMac = hashfunction(str(new_model.PartyName+new_model.VoterId), new_model.PrevMac)
     #If Verified            

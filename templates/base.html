@@ -109,10 +109,11 @@
 
     {% block body %}{% endblock %}
 
-    <script>
-        setTimeout(() => {
-            if (document.getElementsByClassName("flash")[0]) {
-                document.getElementsByClassName("flash")[0].remove();
+    <script> 
+        setInterval(() => {
+            var flash=document.getElementsByClassName("flash");
+            while(flash.length > 0){
+                flash[0].parentNode.removeChild(flash[0]);
             }
 
         }, 2000)

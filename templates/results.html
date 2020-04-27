@@ -10,9 +10,9 @@
         <select class="custom-select" id="inputGroupSelect01" name="party_name">
             <option selected>{{ Election.ElectionName }}</option>
             {% for election in VoteList %}
-            {% if  election.ElectionName!=Election.ElectionName %}
-            <option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
-            {% endif %}
+                {% if  election.ElectionName!=Election.ElectionName %}
+                    <option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
+                {% endif %}
             {% endfor %}
         </select>
         {% if Election.IsOpen %}
