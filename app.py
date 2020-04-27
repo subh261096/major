@@ -282,6 +282,10 @@ def createElection():
         if (Elections.query.filter_by(ElectionName=ElectionName).count() != 0):
             flash("This Election name is already present!! Please Add Current Year in Election Name !!", "danger")
             return render_template("CreateElection.html")
+        elif len(candList) < 2:
+            flash(
+                "Something Went Wrong!! Please Enter Proper Candidate Names", "info")
+            return render_template("CreateElection.html",form=form)
         else:
             data_model = Elections(ElectionName=ElectionName,IsOpen=True)
             vote_model = VotingList(ElectionName=ElectionName, VoterId=(ElectionName+"Admin"), PartyName="None",MacCount=0, PrevMac="None", NewMac=InitialMac)
