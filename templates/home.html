@@ -4,14 +4,15 @@ E-Voting
 {% endblock %}
 {% block body %}
 
-<div class="contianer">
-    <div class="sidebar">
-        <h4><b>Active Elections</b></h4>
-        {% if ActiveElection|length==0 %}
+<div class="contianer-fluid">
+    <div class="row">
+        <div class="sidebar col-sm-2 mb-1">
+            <h4><b>Active Elections</b></h4>
+            {% if ActiveElection|length==0 %}
             <p style="padding-left: 2px;">No Active Elections!!</p>
-        {% else %}
-            <ol style="font-size:25px;list-style-type: none;padding-left:2px;">
-            {% for list in ActiveElection %}
+            {% else %}
+            <ol style="font-size:20px;list-style-type: none;padding-left:2px;">
+                {% for list in ActiveElection %}
                 {% if list.IsOpen %}
                 <div>
                     <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
@@ -19,40 +20,51 @@ E-Voting
                     </li>
                 </div>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
             </ol>
-        {% endif %}
-
-        <h4><b>All Elections</b></h4>
-        {% if ElectionList|length==0 %}
-        <p style="padding: 2px;">No Elections Found!!</p>
-        {% else %}
-        <ol style="font-size:25px;list-style-type: none;padding-left:2px;">
-            {% for list in ElectionList %}
-            {% if list.IsOpen %}
-            <div>
-                <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
-                        style="color:green;padding:10px;">Open</span>
-                </li>
-            </div>
-            {% else %}
-            <div>
-                <li><a href='/results/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
-                        style="color:grey;padding:10px;">Closed</span>
-                </li>
-            </div>
             {% endif %}
-            {% endfor %}
-        </ol>
-        {% endif %}
-    </div>
-    <div class="content text-center">
-        <h1 class="cover-heading">Let's Vote</h1>
-        <p class="lead" style="margin: 20px;padding:20px;">Changing the way and experience of Voting by then Help of Blockchain.</p>
-        <p class="lead">
-            <a href="/ElectionList" class="btn btn-lg btn-primary">Start Voting</a>
-            <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
-        </p>
+
+            <h4><b>All Elections</b></h4>
+            {% if ElectionList|length==0 %}
+            <p style="padding: 2px;">No Elections Found!!</p>
+            {% else %}
+            <ol style="font-size:20px;list-style-type: none;padding-left:2px;">
+                {% for list in ElectionList %}
+                {% if list.IsOpen %}
+                <div>
+                    <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                            style="color:green;padding:10px;">Open</span>
+                    </li>
+                </div>
+                {% else %}
+                <div>
+                    <li><a href='/results/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                            style="color:grey;padding:10px;">Closed</span>
+                    </li>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </ol>
+            {% endif %}
+        </div>
+        <div class="mainHome col-sm-10 mb-1">
+            <div class="text-center">
+                <h1 class="cover-heading">Let's Vote</h1>
+                <p class="lead" style="margin: 20px;padding:20px;">Changing the way and experience of Voting by then
+                    Help of Blockchain.</p>
+                <div class="row">
+                    <div class="col-sm-8 pb-2">
+                        <a href="/ElectionList" class="btn btn-lg btn-primary">Start Voting</a>
+                    </div>
+                    <div class="col-sm-4 pb-2">
+                        <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>   
     </div>
 </div>
 

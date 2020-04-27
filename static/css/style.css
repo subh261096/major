@@ -250,7 +250,7 @@ body {
 }
 
 .container {
-    width: 900px;
+    width: 100%;
     background: #fff;
     margin: 0 auto;
     box-shadow: 0px 15px 16.83px 0.17px rgba(0, 0, 0, 0.05);
@@ -757,19 +757,22 @@ label.valid:after {
     padding: 150px 0;
 }
 .sidebar{
-    float:left;
-    margin:4px;
-    background-color:rgb(207, 223, 221);
-    width:19%;
+    padding-bottom: 5px;
+    width: 100%;
+    background-color:rgb(235, 235, 208);
+    color:black;
 }
-.content{
-    width:80%;
-    border-radius: 5px;
-    margin: 4px;
-    margin-left: 0px;
-    padding:8px;
-    float: right;
-    background-color: rgb(228, 222, 226);
+.mainHome{
+    padding-bottom: 5px;
+    background-color:rgb(234, 220, 236);
+}
+.AllElections{
+    background:rgb(247, 243, 243);
+    padding-bottom:10px;
+}
+.ActiveElections{
+    background:rgb(226, 219, 219);
+    padding-bottom:10px;
 }
 .form-error{
     font-size: 12px;
@@ -777,11 +780,11 @@ label.valid:after {
 }
 
 .flash .info {
-            background-color: rgba(175, 190, 34, 0.979);
-            color: white;
-            font-size: medium;
-            padding:10px;
-        }
+    background-color: rgba(175, 190, 34, 0.979);
+    color: white;
+    font-size: medium;
+    padding:10px;
+}
 .flash .success {
     background-color: rgba(25, 175, 20, 0.979);
     color: white;

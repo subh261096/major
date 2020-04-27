@@ -1,58 +1,56 @@
 {% extends 'base.html' %} {% block body %}
-<section class="sign-in">
-    <div class="container">
-        <div class="signin-content">
-            <div class="contianer">
-                {% if session['IsAdmin'] %}
-                    <form action="/createElection"><button class="btn btn-primary">Create Election</button></form>
-                    <form action="/endElection"><button class="btn btn-primary">End Election</button></form>
+<div class="container-fliud">
+    <div class="row">
+        <div class="AllElections col-sm-6">
+            <h2 class="form-title">All Elections</h2>
+            {% if ElectionList|length==0 %}
+            <p style="padding: 2px;">No Elections Found!!</p>
+            {% else %}
+            <ul style="font-size:25px;list-style-type: none;padding-left: 0;">
+                {% for list in ElectionList %}
+                {% if list.IsOpen %}
+                <div>
+                    <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                            style="color:green;padding:10px;">Open</span>
+                    </li>
+                </div>
+                {% else %}
+                <div>
+                    <li><a href='/results/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                            style="color:grey;padding:10px;">Closed</span>
+                    </li>
+                </div>
                 {% endif %}
-                <div class="AllElections"
-                    style="float:left;margin-left:10px;background:rgb(214, 202, 202);padding:10px;border-radius:5px;">
-                    <h2 class="form-title">All Elections</h2>
-                    {% if ElectionList|length==0 %}
-                        <p style="padding: 2px;">No Elections Found!!</p>
-                    {% else %}
-                        <ul style="font-size:25px;list-style-type: none;padding-left: 0;">
-                            {% for list in ElectionList %}
-                                {% if list.IsOpen %}
-                                <div>
-                                    <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span style="color:green;padding:10px;">Open</span>
-                                    </li>
-                                </div>
-                                {% else %}
-                                <div>
-                                    <li><a
-                                            href='/results/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
-                                                style="color:grey;padding:10px;">Closed</span>
-                                    </li>
-                                </div>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-                <div class="AllElections"
-                    style="float:left;margin-left:20px;background:rgb(214, 202, 202);padding:10px;border-radius:5px;">
-                    <h2 class="form-title">Active Elections</h2>
-                    {% if ActiveElection|length==0 %}
-                    <p style="padding: 2px;">No Active Elections!!</p>
-                    {% else %}
-                    <ul style="font-size:25px;list-style-type: none;padding-left: 0;">
-                        {% for list in ActiveElection %}
-                        {% if list.IsOpen %}
-                        <div>
-                            <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
-                                    style="color:green;padding:10px;">Open</span>
-                            </li>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-            </div>  
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
-    </div>
-</section>
+        <div class="ActiveElections col-sm-6">
+            <h2 class="form-title">Active Elections</h2>
+            {% if ActiveElection|length==0 %}
+            <p style="padding: 2px;">No Active Elections!!</p>
+            {% else %}
+            <ul style="font-size:25px;list-style-type: none;padding-left: 0;">
+                {% for list in ActiveElection %}
+                {% if list.IsOpen %}
+                <div>
+                    <li><a href='/castvote/{{ list.ElectionName }}'>{{ list.ElectionName }}</a><span
+                            style="color:green;padding:10px;">Open</span>
+                    </li>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>  
+    {% if session['IsAdmin'] %}
+        <div class="row">
+            <div class="col-sm-1 m-2 ml-0">
+                <form action="/createElection"><button class="btn btn-primary">Create Election</button></form>
+                <form action="/endElection"><button class="btn btn-primary">End Election</button></form>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock%}

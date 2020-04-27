@@ -31,8 +31,8 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -147,8 +147,10 @@ def already_logged_in(f):
     return wrap
 
 
-######################################### SIGN UP #####################################################
+######################################### SIGN UP ####################################################
+
 @app.route('/signup', methods=['POST', 'GET'])
+@is_admin
 def signup():
     form = RegistrationForm(request.form)
 
@@ -396,10 +398,10 @@ def results(Election='Choose'):
             else:
                 party[object.PartyName] = 1
         party.pop("None")
-        print(party)
+        print(len(party))
         return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.filter_by(ElectionName=Election).first(), Listing=party)
 
 if __name__ == '__main__':
     db.create_all()
-    app.run()
-    # app.run(debug=True)
+    # app.run()
+    app.run(debug=True)

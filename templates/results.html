@@ -7,7 +7,7 @@
         <left>
             <h3>Select Election</h3>
         </left>
-        <select class="custom-select" id="inputGroupSelect01" name="party_name">
+        <select class="custom-select" id="inputGroupSelect01" name="party_name" required>
             <option selected>{{ Election.ElectionName }}</option>
             {% for election in VoteList %}
                 {% if  election.ElectionName!=Election.ElectionName %}
@@ -43,6 +43,7 @@
         type: 'doughnut',
         data: {
             labels: ['BJP', 'Congress', 'JDU', 'CPM', 'AAP', 'Shiv Sena'],
+            indexLabel: "{labels} {y}",
             datasets: [{
                 label: '# of Votes',
                 {% if Listing %}
