@@ -54,7 +54,7 @@ class Users(db.Model):
                     ########################### END #########################   
 
 
-                    ######################### USER LIST ###################
+                    ############################### END ##########################
 class Elections(db.Model):
     __tablename__ = 'Elections'
     ElectionName = db.Column(db.String(30), primary_key=True)
@@ -63,7 +63,11 @@ class Elections(db.Model):
     IsOpen= db.Column(db.Boolean,default=False)
     Elections = db.relationship('VotingList', cascade="all,delete", backref='Elections')
                     ############################### END ##########################
-
+class CandidateList(db.Model):
+    __tablename__ = 'CandidateList'
+    ElectionName=db.Column(db.String(30),db.ForeignKey('Elections.ElectionName'),primary_key=True)
+    CandidateList = db.Column(db.Text)
+                    ############################### END ##########################
 class VotingList(db.Model):
     __tablename__ = 'VotingList'
     ElectionName=db.Column(db.String(30),db.ForeignKey('Elections.ElectionName'),primary_key=True)
@@ -98,7 +102,8 @@ class CreateElectionForm(Form):
     ElectionName = TextField(
         'ElectionName', [validators.DataRequired(), validators.Length(min=4, max=20)])
     InitialMac = TextField(
-        "voterId", [validators.DataRequired(), validators.Length(min=8, max=16)])
+        "InitialMac", [validators.DataRequired(), validators.Length(min=8, max=16)])
+    
 ######################################### END #######################################################
 
 def CloseElection():
@@ -266,7 +271,12 @@ def logout():
 @is_admin
 def createElection():
     form=CreateElectionForm(request.form)
-    if request.method == "POST" and form.validate():
+    
+    if request.method == "POST":
+        candList=[]
+        for key in request.form.to_dict():
+            if key.startswith("Candidate-"):
+                candList.append(request.form[key])
         ElectionName = form.ElectionName.data
         InitialMac = form.InitialMac.data
         if (Elections.query.filter_by(ElectionName=ElectionName).count() != 0):
@@ -275,11 +285,15 @@ def createElection():
         else:
             data_model = Elections(ElectionName=ElectionName,IsOpen=True)
             vote_model = VotingList(ElectionName=ElectionName, VoterId=(ElectionName+"Admin"), PartyName="None",MacCount=0, PrevMac="None", NewMac=InitialMac)
+            candlist_model = CandidateList(ElectionName=ElectionName, CandidateList="|".join(candList))
             save_to_database = db.session
             try:
                 save_to_database.add(data_model)
-                save_to_database.add(vote_model)
                 save_to_database.commit()
+                save_to_database.add(vote_model)
+                save_to_database.add(candlist_model)
+                save_to_database.commit()
+                
                 flash('Election Created Successfully!',"success")
                 return redirect(url_for('home'))
             except Exception as e:
@@ -327,7 +341,8 @@ def ElectionList():
 @is_logged_in
 def CastVote(ElectionName):
     if(VotingList.query.filter_by(ElectionName=ElectionName, VoterId=session['uid']).count() == 0):
-        return render_template("CastVote.html", ElectionName=ElectionName)
+        candlist=CandidateList.query.filter_by(ElectionName=ElectionName).first()
+        return render_template("CastVote.html", ElectionName=ElectionName, candidateList=candlist.CandidateList.split("|"))
     else:
         flash("Vote Already submitted for "+str(ElectionName),"info")
         return redirect(url_for("ElectionList"))

@@ -6,8 +6,8 @@
             <span style="color:grey;font-size:20px;">No Active Elections!!</span>
             {% else %}
             <form action="/endElection" method="post">
-                <select class="custom-select" id="inputGroupSelect01" name="party_name">
-                    <option selected>Choose Election</option>
+                <select class="custom-select" id="inputGroupSelect01" name="party_name" required aria-required="false">
+                    <option value="" selected>Choose Election</option>
                     {% for election in ElectionList %}
                         {% if election.IsOpen %}
                             <option option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
