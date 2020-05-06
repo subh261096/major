@@ -6,6 +6,7 @@
             <h2 style="padding:10px;">No Results available!!</h2>
         </center>
     {% else %}
+        {% if Listing %}
         <left>
             <h3>Select Election</h3>
         </left>
@@ -17,29 +18,38 @@
                 {% endif %}
             {% endfor %}
         </select>
-        {% if Election.IsOpen %}
-            <h2>Election Still in Progress!!</h2> 
-            <br>
-            <center style="padding:10px;font-size:20px;">Wait For Results!!</center>
+            {% if Election.IsOpen %}
+                <h2>Election Still in Progress!!</h2> 
+                <br>
+                <center style="padding:10px;font-size:20px;">Wait For Results!!</center>
+            {% else %}
+                {% if Listing|length !=0 %}
+                    <h2>Election Closed!!</h2>
+                    <center style="padding:10px;font-size:20px;">Here are the Results!!</center>
+                    <canvas id="myChart" width="975px" height="532px"></canvas>
+                {% else %}
+                    <h2>Election Closed!!</h2>
+                    <center style="padding:10px;font-size:20px;">No Votes Casted !!</center>
+                {% endif %}
+            {% endif %}
         {% else %}
-            <h2>Election Closed!!</h2>
-            <center style="padding:10px;font-size:20px;">Here are the Results!!</center>
-            <canvas id="myChart" width="975px" height="532px"></canvas><br><br>
+            <left>
+                <h3>Select Election</h3>
+            </left>
+            <select class="custom-select" id="inputGroupSelect01" name="party_name" required>
+                <option value="" selected>choose..</option>
+                {% for election in VoteList %}
+                    {% if  election.ElectionName!=Election.ElectionName %}
+                    <option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <center><h2>Choose An Election!!</h2></center>
         {% endif %}
-        
     {% endif %}
 </div>
 
 <script>
-    jQuery(function($) {
-        $('select').on('change', function() {
-            var url = $(this).val();
-            if (url) {
-                window.location = "/results/"+ url;
-            }
-            return false;
-        });
-    });
     var ctx = document.getElementById('myChart');
     var myChart = new Chart(ctx, {
         type: 'doughnut',
@@ -85,8 +95,6 @@
                 0
                 {% endif %}
                 ]
-                {% else %}
-                    data:[12, 19, 3, 5, 2, 3]
                 {% endif %}
                 ,
                 backgroundColor: [

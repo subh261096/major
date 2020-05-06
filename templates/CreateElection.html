@@ -19,7 +19,7 @@ Create Election
                             <span class="input-group-text" id="inputGroup-sizing-sm">Election Name</span>
                         </div>
                         <input type="text" class="form-control" name="ElectionName" aria-label="Small"
-                            aria-describedby="inputGroup-sizing-sm">
+                            aria-describedby="inputGroup-sizing-sm" required aria-required="false">
                     </div>
                     <span class="form-error" id="ElectionName"></span>
                     {% for error in  form.ElectionName.errors %}
@@ -30,7 +30,7 @@ Create Election
                             <span class="input-group-text" id="inputGroup-sizing-sm">Initial Mac</span>
                         </div>
                         <input type="text" class="form-control" name="InitialMac" aria-label="Small"
-                            aria-describedby="inputGroup-sizing-sm">
+                            aria-describedby="inputGroup-sizing-sm" required aria-required="false">
                     </div>
                     <span class="form-error" id="InitialMac"></span>
                     {% for error in  form.InitialMac.errors %}
@@ -42,7 +42,7 @@ Create Election
                                 <span class="input-group-text" id="inputGroup-sizing-sm">Candidte 1</span>
                             </div>
                             <input type="text" class="form-control" name="Candidate-1" id="candidate1" aria-label="Small"
-                                aria-describedby="inputGroup-sizing-sm">
+                                aria-describedby="inputGroup-sizing-sm" required aria-required="flase">
                         </div>
                         <span id="candidate1error" class="form-error"></span>
                         <div class="input-group input-group-sm mb-1">
@@ -51,9 +51,8 @@ Create Election
                             </div>
                             <input type="text" class="form-control" name="Candidate-2" id="candidate2"
                                 aria-label="Small"
-                                aria-describedby="inputGroup-sizing-sm">
+                                aria-describedby="inputGroup-sizing-sm" required aria-required="flase">
                         </div>
-                        <span id="candidate2error" class="form-error"></span>
                     </div>
 
                     <div class="form-group form-button ">
@@ -75,16 +74,16 @@ Create Election
     
     addcand.addEventListener("click",()=>{
         count+=1;
-        var dummy=dummy='<div class="input-group input-group-sm mb-1">\
+        var dummy='<div class="input-group input-group-sm mb-1">\
             <div class="input-group-prepend">\
                 <span class="input-group-text" id="inputGroup-sizing-sm">Candidte '+count+'</span>\
             </div>\
             <input type="text" class="form-control" name="Candidate-'+count+'" id="candidate'+count+'"\
                 aria-label="Small" \
-                aria-describedby="inputGroup-sizing-sm">\
-        </div><span id="candidate'+count+'error"></span>'
+                aria-describedby="inputGroup-sizing-sm" required aria-required="flase">\
+        </div>'
         console.log("clicked");
-        document.getElementById('candidates').innerHTML += dummy;
+        document.getElementById('candidates').insertAdjacentHTML("beforeend", dummy);
     });
     remcand.addEventListener("click",()=>{
         console.log("removed");
@@ -97,36 +96,7 @@ Create Election
         }
         
     });
-    form.addEventListener("submit",(event)=>{
-        var submit=true;
-        if(document.getElementsByName("ElectionName")[0].value.length==0){
-            document.getElementById("ElectionName").innerHTML="Data Required";
-        }
-        if(document.getElementsByName("InitialMac")[0].value.length==0){
-        document.getElementById("InitialMac").innerHTML="Data Required";
-        }
-        for(var i =1;i<=candidates.length;i++){
-            if(document.getElementById("candidates").getElementsByTagName("input")[i-1].value.length==0){
-                document.getElementById("candidate"+i+"error").innerHTML="Name Required";
-                submit=false;
-            }
-        }
-        if(submit!=true){
-            event.preventDefault();
-            setTimeout(() => {
-                var errors=document.getElementsByClassName("form-error");
-                while(errors.length > 0){
-                    errors[0].parentNode.removeChild(errors[0]);
-                }
-            }, 4000)
-        }
-    })
-    setTimeout(() => {
-        var errors=document.getElementsByClassName("form-error");
-        while(errors.length > 0){
-            errors[0].parentNode.removeChild(errors[0]);
-        }
-    }, 4000)
+
 </script>
 
 {% endblock %}

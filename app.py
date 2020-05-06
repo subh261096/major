@@ -315,7 +315,6 @@ def endElection():
     if request.method == "POST":
         ElectionName = request.form.get("party_name")
         data_model = Elections.query.get(ElectionName)
-        print(data_model)
         save_to_database = db.session
         try:
             data_model.IsOpen = False
@@ -405,10 +404,8 @@ def submit_vote(ElectionName):
 @app.route('/results')
 @app.route('/results/<Election>')
 @is_logged_in
-def results(Election='Choose'):
-    if(Election == 'Choose'):
-        return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.first())
-    else:
+def results(Election=False):
+    if(Election):
         objects = VotingList.query.filter_by(ElectionName=Election).all()
         party = {}
         for object in objects:
@@ -419,7 +416,8 @@ def results(Election='Choose'):
         party.pop("None")
         print(len(party))
         return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.filter_by(ElectionName=Election).first(), Listing=party)
-
+    else:
+        return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.first())
 if __name__ == '__main__':
     db.create_all()
     app.run()
