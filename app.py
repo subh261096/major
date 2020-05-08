@@ -330,6 +330,25 @@ def endElection():
     return render_template("EndElection.html",ElectionList=Elections.query.filter_by(IsOpen=True).all())
 ######################################### END ###########################################################
 
+############################################### AUDIT ######################################################
+@app.route('/audit' , methods=['GET' ,'POST'])
+@is_logged_in
+def audit():
+    if request.method == 'POST':
+        ElectionName = request.form.get("party_name")
+        data_model = VotingList.query.filter_by(ElectionName=ElectionName,VoterId=session['uid'])
+        prevmac = data_model.PrevMac
+        #party = str(data_model.PartyName)
+        print(data_model.PartyName)
+        genMac = hashfunction(str(data_model.PartyName+session['uid']), prevmac)
+        Newmac = data_model.NewMac
+        if genMac == Newmac:
+            flash("Vote Casted Verified")
+    return render_template("audit.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
+
+
+################################################ END ########################################################
+
 @app.route('/')
 def home():
     return render_template("home.html", ElectionList=Elections.query.all(), ActiveElection=Elections.query.filter_by(IsOpen=True).all())
