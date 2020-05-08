@@ -31,8 +31,8 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:subh261096@localhost:5432/postgres'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:password@localhost:5432/major'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -209,6 +209,7 @@ def login():
                 # setting session timeout
                 app.permanent_session_lifetime = timedelta(minutes=5)
                 session['logged_in'] = True
+                session['is_admin'] = False
                 session['uid'] = data_model.VoterId
                 session['UserName'] = data_model.UserName
                 flash("Welcome %s!" % (data_model.UserName),"success")
@@ -336,17 +337,18 @@ def endElection():
 def audit():
     if request.method == 'POST':
         ElectionName = request.form.get("party_name")
-        data_model = VotingList.query.filter_by(ElectionName=ElectionName,VoterId=session['uid'])
-        prevmac = data_model.PrevMac
-        #party = str(data_model.PartyName)
-        print(data_model.PartyName)
-        genMac = hashfunction(str(data_model.PartyName+session['uid']), prevmac)
+        data_model = VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid'])
+        print("--------------------------")
+        print(data_model)
+        print("_---------------------------")
+        #prevmac = data_model.PrevMac
+        party = data_model.PartyName
+        #print("hello"+str(data_model.PartyName))
+        genMac = hashfunction(str(party+session['uid']), prevmac)
         Newmac = data_model.NewMac
         if genMac == Newmac:
             flash("Vote Casted Verified")
     return render_template("audit.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
-
-
 ################################################ END ########################################################
 
 @app.route('/')
@@ -439,5 +441,5 @@ def results(Election=False):
         return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.first())
 if __name__ == '__main__':
     db.create_all()
-    app.run()
-    # app.run(debug=True)
+    #app.run()
+    app.run(debug=True)
