@@ -209,6 +209,7 @@ def login():
                 # setting session timeout
                 app.permanent_session_lifetime = timedelta(minutes=5)
                 session['logged_in'] = True
+                session['IsAdmin'] = False
                 session['uid'] = data_model.VoterId
                 session['UserName'] = data_model.UserName
                 flash("Welcome %s!" % (data_model.UserName),"success")
