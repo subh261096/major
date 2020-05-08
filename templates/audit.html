@@ -7,7 +7,7 @@ AUDIT
 	<left>
         <h3>Select Election</h3>
     </left>
-    <form action="/audit/" method="post">
+    <form action="/audit" method="post">
         <select class="custom-select" id="inputGroupSelect01" name="party_name" required aria-required="false">
             <option value="" selected>Choose Election</option>
             {% for election in ElectionList %}
