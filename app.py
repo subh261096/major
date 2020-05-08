@@ -31,7 +31,7 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:password@localhost:5432/major'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
@@ -341,14 +341,33 @@ def audit():
             flash("NO Vote Found","danger")
         else:
             data_model = VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid']).first()
-            prevmac = data_model.PrevMac
-            party = data_model.PartyName
-            #print("hello"+str(data_model.PartyName))
-            genMac = hashfunction(str(party+session['uid']), prevmac)
-            Newmac = data_model.NewMac
-            if genMac == Newmac:
-                flash("Vote Casted Verified")
+            return render_template("AuditVote.html",VoteData=data_model)
+            # prevmac = data_model.PrevMac
+            # party = data_model.PartyName
+            # #print("hello"+str(data_model.PartyName))
+            # genMac = hashfunction(str(party+session['uid']), prevmac)
+            # Newmac = data_model.NewMac
+            # if genMac == Newmac:
+            #     flash("Vote Casted Verified")
     return render_template("audit.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
+################################################ END ########################################################
+
+############################################### Verify Vote ######################################################
+@app.route('/verifyvote/<ElectionName>/<voterId>',methods=["POST"])
+@is_logged_in
+def verifyvote(ElectionName,voterId):
+    data_model = VotingList.query.filter_by(
+        ElectionName=ElectionName, VoterId=voterId).first()
+    prevmac = data_model.PrevMac
+    party = data_model.PartyName
+    genMac = hashfunction(str(party+session['uid']), prevmac)
+    Newmac = data_model.NewMac
+    if genMac == Newmac:
+        flash("Vote Casted Verified","success")
+        return render_template("audit.html", ElectionList=Elections.query.filter_by(IsOpen=False).all())
+    else:
+        flash("Issue Verifying!! Contact Admin!!","danger")
+        return render_template("audit.html", ElectionList=Elections.query.filter_by(IsOpen=False).all())
 ################################################ END ########################################################
 
 @app.route('/')
