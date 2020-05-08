@@ -241,7 +241,7 @@ def Adminlogin():
                 # setting session timeout
                 app.permanent_session_lifetime = timedelta(minutes=5)
                 session['logged_in'] = True
-                session['IsAdmin'] = data_model.IsAdmin
+                session['is_admin'] = data_model.IsAdmin
                 session['uid'] = data_model.VoterId
                 session['UserName'] = data_model.UserName
                 flash("Welcome %s!" % (data_model.UserName),"success")
@@ -337,17 +337,17 @@ def endElection():
 def audit():
     if request.method == 'POST':
         ElectionName = request.form.get("party_name")
-        data_model = VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid'])
-        print("--------------------------")
-        print(data_model)
-        print("_---------------------------")
-        #prevmac = data_model.PrevMac
-        party = data_model.PartyName
-        #print("hello"+str(data_model.PartyName))
-        genMac = hashfunction(str(party+session['uid']), prevmac)
-        Newmac = data_model.NewMac
-        if genMac == Newmac:
-            flash("Vote Casted Verified")
+        if (VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid']).count()==0):
+            flash("NO Vote Found","danger")
+        else:
+            data_model = VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid']).first()
+            prevmac = data_model.PrevMac
+            party = data_model.PartyName
+            #print("hello"+str(data_model.PartyName))
+            genMac = hashfunction(str(party+session['uid']), prevmac)
+            Newmac = data_model.NewMac
+            if genMac == Newmac:
+                flash("Vote Casted Verified")
     return render_template("audit.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
 ################################################ END ########################################################
 
