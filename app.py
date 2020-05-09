@@ -10,7 +10,6 @@ from datetime import timedelta
 import datetime
 import time
 import pymysql
-from flask_table import Table, Col
 
 dictConfig({
     'version': 1,
@@ -32,8 +31,8 @@ dictConfig({
 app = Flask(__name__)
 
 ######################################### CONFIGRATION OF DATABSE ######################################
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:password@localhost:5432/major'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://nbjddnrtflahdi:52ab741ca2a00fa065058f7613581c5f5e8bac12f49500d4248c42ca7ef59337@ec2-18-215-99-63.compute-1.amazonaws.com:5432/d2iimlldlcqt7j'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:password@localhost:5432/major'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SECRET_KEY'] = 'subh261096'
 db = SQLAlchemy(app)
@@ -380,13 +379,15 @@ def verifyElection(ElectionName):
             print("Voting modified for "+votes.VoterId)
     #If Verified            
     if(tempNewMac == votes.NewMac):
-        flash("Verified the Votings!!","success")
+        flash("Verified the Votings For Whole ELection!!","success")
+        return render_template("audit.html", ElectionList=Elections.query.filter_by(IsOpen=False).all())
     else: #Not Verified
         flash("Voting List have been Altered!!","danger")
-    return render_template("audit_full.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
+        return render_template("audit.html", ElectionList=Elections.query.filter_by(IsOpen=False).all())
+    return render_template("audit.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
 
 
-#################################################### END ###############################################################
+#################################################### END #########################################################
 
 ############################################### Verify Vote ######################################################
 @app.route('/verifyvote/<ElectionName>/<voterId>',methods=["POST"])
