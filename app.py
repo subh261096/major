@@ -100,7 +100,7 @@ class RegistrationForm(Form):
 
 class CreateElectionForm(Form):
     ElectionName = TextField(
-        'ElectionName', [validators.DataRequired(), validators.Length(min=4, max=20)])
+        'ElectionName', [validators.DataRequired(), validators.Length(min=4, max=20).validators.AlphaNumeric()])
     InitialMac = TextField(
         "InitialMac", [validators.DataRequired(), validators.Length(min=8, max=16)])
     
