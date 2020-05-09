@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+AUDIT ELECTION
+{% endblock %}
+{% block body %}
+<div class= "container-fluid">
+	<left>
+        <h3>Select Election</h3>
+    </left>
+    <form action="/audit_full" method="post">
+        <select class="custom-select" id="inputGroupSelect01" name="party_name" required aria-required="false">
+            <option value="" selected>Choose Election</option>
+            {% for election in ElectionList %}
+                    <option option value="{{ election.ElectionName }}">{{ election.ElectionName }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:2px;">Verify</button>
+	</form>
+        
+
+
+{% endblock %}

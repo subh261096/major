@@ -70,6 +70,16 @@
                     </li>
                     {% endif %}
 
+                    {% if request.path=="/audit_full" %}
+                    <li class="nav-item  active">
+                        <a class="nav-link active" href="/audit_full">Audit Election<span class="sr-only">(current)</span></a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/audit_full">Audit Election</a>
+                    </li>
+                    {% endif %}
+
                 </ul>
                 {% if session['logged_in'] and session['IsAdmin']== True %}
                 <ul class="navbar-nav mr-1 mt-0">

@@ -10,6 +10,7 @@ from datetime import timedelta
 import datetime
 import time
 import pymysql
+from flask_table import Table, Col
 
 dictConfig({
     'version': 1,
@@ -352,6 +353,24 @@ def audit():
     return render_template("audit.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
 ################################################ END ########################################################
 
+########################################## Verify Elections ############################################################
+@app.route('/audit_full', methods=['GET','POST'])
+@is_logged_in
+def audit_full():
+    if request.method == 'POST':
+        ElectionName = request.form.get("party_name")
+        if (VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid']).count()==0):
+            flash("NO Vote Found","danger")
+        else:
+            data_model = VotingList.query.filter_by(ElectionName=ElectionName).order_by("MacCount").all()
+            print('###########################################')
+            print(data_model)
+            return render_template("AuditElection.html",VoteData=data_model)
+    return render_template("audit_full.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
+
+
+#################################################### END ###############################################################
+
 ############################################### Verify Vote ######################################################
 @app.route('/verifyvote/<ElectionName>/<voterId>',methods=["POST"])
 @is_logged_in
@@ -374,7 +393,6 @@ def verifyvote(ElectionName,voterId):
 def home():
     return render_template("home.html", ElectionList=Elections.query.all(), ActiveElection=Elections.query.filter_by(IsOpen=True).all())
 
-
 @app.route('/ElectionList')
 @is_logged_in
 def ElectionList():
@@ -390,6 +408,8 @@ def CastVote(ElectionName):
         flash("Vote Already submitted for "+str(ElectionName),"info")
         return redirect(url_for("ElectionList"))
 
+
+############################################### SUBMIT VOTE ################################################################
 @app.route('/submit_vote/<ElectionName>',methods=['GET','POST'])
 @is_logged_in
 def submit_vote(ElectionName):
@@ -441,6 +461,10 @@ def submit_vote(ElectionName):
         return redirect(url_for("ElectionList"))
     return redirect(url_for("ElectionList"))
 
+############################################# END ######################################################################
+
+
+
 @app.route('/results')
 @app.route('/results/<Election>')
 @is_logged_in
@@ -458,6 +482,9 @@ def results(Election=False):
         return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.filter_by(ElectionName=Election).first(), Listing=party)
     else:
         return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.first())
+
+
+
 if __name__ == '__main__':
     db.create_all()
     #app.run()
