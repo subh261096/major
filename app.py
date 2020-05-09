@@ -339,9 +339,11 @@ def audit():
     if request.method == 'POST':
         ElectionName = request.form.get("party_name")
         if (VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid']).count()==0):
-            flash("NO Vote Found","danger")
+            flash("No Vote Found","danger")
         else:
             data_model = VotingList.query.filter_by(ElectionName=ElectionName , VoterId=session['uid']).first()
+            print("#########################")
+            print(data_model)
             return render_template("AuditVote.html",VoteData=data_model)
             # prevmac = data_model.PrevMac
             # party = data_model.PartyName
@@ -363,9 +365,24 @@ def audit_full():
             flash("NO Vote Found","danger")
         else:
             data_model = VotingList.query.filter_by(ElectionName=ElectionName).order_by("MacCount").all()
-            print('###########################################')
-            print(data_model)
-            return render_template("AuditElection.html",VoteData=data_model)
+            return render_template("AuditElection.html",VoteData=data_model,ElectionName=ElectionName)
+    return render_template("audit_full.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
+
+@app.route('/verfiyElection/<ElectionName>',methods=['POST'])
+@is_logged_in
+def verifyElection(ElectionName):
+    VoteList = VotingList.query.filter_by(ElectionName=ElectionName).order_by("MacCount").all()
+    tempNewMac=VoteList[0].NewMac
+    for votes in VoteList[1:]:
+        if(tempNewMac == votes.PrevMac):
+            tempNewMac = hashfunction(str(votes.PartyName+votes.VoterId), votes.PrevMac)
+        else:
+            print("Voting modified for "+votes.VoterId)
+    #If Verified            
+    if(tempNewMac == votes.NewMac):
+        flash("Verified the Votings!!","success")
+    else: #Not Verified
+        flash("Voting List have been Altered!!","danger")
     return render_template("audit_full.html",ElectionList=Elections.query.filter_by(IsOpen=False).all())
 
 

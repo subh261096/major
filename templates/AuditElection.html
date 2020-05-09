@@ -3,33 +3,32 @@
 Audit Election
 {% endblock %}
 {% block body %}
-    
-<div class="container-fluid">
-    <h3>MAC LIST</h3>
-    <table class="table">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col">VoterID</th>
-          <th scope="col">Prevmac</th>
-          <th scope="col">NewMac</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in VoteData %}
-        <tr>
-            <td>{{ VoteData.VoterId }}</td>
-            <td>{{ VoteData.PrevMac }}</td>
-            <td>{{ VoteData.NewMac }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-      <div class="form-group form-button ">
-        <input class="btn btn-outline-success" type="submit" value="Verify Vote" name="success"
-                   id="success">
-        </div>
-    
+<div class="container-fluid">   
+  <form method="POST" class="register-form" id="login-form"action="/verfiyElection/{{ ElectionName }}">      
+      <h3>MAC LIST</h3>
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">VoterID</th>
+            <th scope="col">Prevmac</th>
+            <th scope="col">NewMac</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for data in VoteData %}
+            <tr>
+                <td>{{ data.VoterId }}</td>
+                <td>{{ data.PrevMac }}</td>
+                <td>{{ data.NewMac }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        <div class="form-group form-button ">
+          <input class="btn btn-outline-success" type="submit" value="Verify Vote" name="success"
+                     id="success">
+          </div>
+  </form>
 </div>
-
 
 {% endblock %}
