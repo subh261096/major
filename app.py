@@ -106,10 +106,6 @@ class CreateElectionForm(Form):
     
 ######################################### END #######################################################
 
-def CloseElection():
-    time.sleep(2)
-    print("he")
-
 
 
 
@@ -488,16 +484,16 @@ def submit_vote(ElectionName):
 @is_logged_in
 def results(Election=False):
     if(Election):
-        objects = VotingList.query.filter_by(ElectionName=Election).all()
+        
+        CandidList = CandidateList.query.filter_by(
+            ElectionName=Election).first().CandidateList.split("|")
         party = {}
-        for object in objects:
-            if object.PartyName in party.items():
-                party[object.PartyName] += 1
-            else:
-                party[object.PartyName] = 1
-        party.pop("None")
-        print(len(party))
-        return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.filter_by(ElectionName=Election).first(), Listing=party)
+        for cand in CandidList:
+            party[cand] = len(VotingList.query.filter_by(
+                ElectionName=Election,PartyName=cand).all())
+        # party.pop("None")
+        print(party)
+        return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.filter_by(ElectionName=Election).first(), Listing=party, PartyNames=CandidList)
     else:
         return render_template("results.html", VoteList=Elections.query.all(), Election=Elections.query.first())
 
@@ -505,5 +501,5 @@ def results(Election=False):
 
 if __name__ == '__main__':
     db.create_all()
-    app.run()
-    # app.run(debug=True)
+    # app.run()
+    app.run(debug=True)

@@ -1,10 +1,12 @@
 {% extends 'base.html' %} {% block body %}
 
 <div class="container">
-    {% if VoteList|length ==0 %}
+    {% if VoteList.length==0 %}
         <center>
-            <h2 style="padding:10px;">No Results available!!</h2>
+            <h2 style="padding:10px;">No Elections Closed!!</h2>
         </center>
+        <center style="padding:10px;font-size:20px;">Sample Results!!</center>
+        <canvas id="myChart" width="975px" height="532px"></canvas>
     {% else %}
         {% if Listing %}
         <left>
@@ -50,72 +52,67 @@
 </div>
 
 <script>
-    var ctx = document.getElementById('myChart');
-    var myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['BJP', 'Congress', 'JDU', 'CPM', 'AAP', 'Shiv Sena'],
+    if(document.getElementById("inputGroupSelect01")){
+        var select=document.getElementById("inputGroupSelect01")
+        select.addEventListener("change",(event)=>{
+        if (event.target.value != ''){
+            var url ='/results/'+ event.target.value ;
+            window.location = url; // redirect
+        }
+        })
+    }
+
+    
+    if(document.getElementById('myChart')){
+        var ctx =document.getElementById('myChart')
+        var myChart = new Chart(ctx,
+        {
+            type: 'doughnut',
+            data: {
+            labels: 
+            {% if PartyNames %}
+                [
+                {% for party in PartyNames %}
+                    '{{party}}',
+                {% endfor %}
+                ]
+            {% else %}
+                ['BJP', 'Congress', 'JDU', 'CPM', 'AAP', 'Shiv Sena']
+            {% endif %},
             indexLabel: "{labels} {y}",
             datasets: [{
-                label: '# of Votes',
-                {% if Listing %}
-                data: [
-                {% if Listing.BJP and Listing.BJP!=0 %}
-                {{ Listing.BJP }}
-                {% else  %}
-                0
-                {% endif %},
-
-                {% if Listing.Congress and Listing.Congress!=0 %}
-                {{ Listing.Congress }}
-                {% else  %}
-                0
-                {% endif %},
-
-                {% if Listing.JDU and Listing.JDU!=0 %}
-                {{ Listing.JDU }}
-                {% else  %}
-                0
-                {% endif %},
-
-                {% if Listing.CPM and Listing.CPM!=0 %}
-                {{ Listing.CPM }}
-                {% else  %}
-                0
-                {% endif %},
-
-                {% if Listing.AAP and Listing.AAP!=0 %}
-                {{ Listing.AAP }}
-                {% else  %}
-                0
-                {% endif %},
-                {% if Listing.ShivSena and Listing.ShivSena!=0 %}
-                {{ Listing.ShivSena }}
-                {% else  %}
-                0
-                {% endif %}
+            label: '# of Votes',
+            data:
+            {% if PartyNames %}
+                [
+                {% for party in PartyNames %}
+                        {{Listing[party]}},
+                {% endfor %}
                 ]
-                {% endif %}
-                ,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.5)',
-                    'rgba(54, 162, 235, 0.5)',
-                    'rgba(255, 206, 86, 0.5)',
-                    'rgba(75, 192, 192, 0.5)',
-                    'rgba(153, 102, 255, 0.5)',
-                    'rgba(255, 159, 64, 0.5)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
+            {% else %}
+                [12,15,14,11,10,8]
+            {% endif %},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(54, 162, 235, 0.5)',
+                'rgba(255, 206, 86, 0.5)',
+                'rgba(75, 192, 192, 0.5)',
+                'rgba(153, 102, 255, 0.5)',
+                'rgba(255, 159, 64, 0.5)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
         },
-    });
+        });
+    }
+    
 </script>
 {% endblock%}
